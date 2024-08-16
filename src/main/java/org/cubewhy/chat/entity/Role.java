@@ -12,9 +12,6 @@ import java.util.Set;
 
 @Data
 @Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +24,5 @@ public class Role {
     private Set<Permission> permissions;
 
     @ManyToMany(mappedBy = "roles")
-    @Builder.Default
-    private Set<Account> accounts = new HashSet<>();
+    private Set<Account> accounts;
 }

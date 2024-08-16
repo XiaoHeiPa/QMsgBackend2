@@ -1,7 +1,9 @@
 package org.cubewhy.chat;
 
 import jakarta.annotation.Resource;
+import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.service.AccountService;
+import org.cubewhy.chat.service.RoleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,10 +16,13 @@ class QMsgBackendApplicationTests {
     BCryptPasswordEncoder passwordEncoder;
     @Resource
     AccountService accountService;
+    @Resource
+    RoleService roleService;
 
     @Test
     void contextLoads() {
-        accountService.createAccount("test1", "test1", Collections.singleton("USER1"));
+        roleService.createRole("DEFAULT", "Default group", Permission.SEND_MESSAGE, Permission.JOIN_CHANNEL, Permission.CREATE_CHANNEL);
+        accountService.createAccount("test1", "test1", Collections.singleton("DEFAULT"));
     }
 
     @Test

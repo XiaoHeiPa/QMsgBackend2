@@ -2,6 +2,8 @@ package org.cubewhy.chat.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.Set;
 
@@ -14,7 +16,11 @@ public class Account implements BaseData {
 
     private String username;
     private String password;
-    @ManyToMany
+
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     @JoinTable(
             name = "account_roles",
             joinColumns = @JoinColumn(name = "account_id"),

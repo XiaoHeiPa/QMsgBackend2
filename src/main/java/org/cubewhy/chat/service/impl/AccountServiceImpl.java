@@ -3,22 +3,16 @@ package org.cubewhy.chat.service.impl;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.cubewhy.chat.entity.Account;
-import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.Role;
 import org.cubewhy.chat.repository.AccountRepository;
-import org.cubewhy.chat.repository.RoleRepository;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.RoleService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -31,8 +25,12 @@ public class AccountServiceImpl implements AccountService {
     RoleService roleService;
 
     @Override
+    @Transactional
     public Account findAccountByNameOrEmail(String usernameOrEmail) {
-        return accountRepository.findByUsername(usernameOrEmail).orElse(accountRepository.findByEmail(usernameOrEmail).orElse(null));
+        Account account = accountRepository.findByUsername(usernameOrEmail).orElse(accountRepository.findByEmail(usernameOrEmail).orElse(null));
+        if (account == null) return null;
+        account.setRoles(roleService.findAll(account));
+        return account;
     }
 
     @Transactional
@@ -52,10 +50,9 @@ public class AccountServiceImpl implements AccountService {
         Set<Role> roles = new HashSet<>();
         for (String roleName : roleNames) {
             Role role = roleService.findByName(roleName);
-            if (role == null) {
-                roleService.createRole(roleName, Permission.SEND_MESSAGE, Permission.JOIN_CHANNEL, Permission.CREATE_CHANNEL);
+            if (role != null) {
+                roles.add(role);
             }
-            roles.add(role);
         }
         account.setRoles(roles);
 

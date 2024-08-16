@@ -112,7 +112,7 @@ public class JwtUtil {
         }
     }
 
-    public String createJwt(@NotNull UserDetails details, int id, String username) {
+    public String createJwt(@NotNull UserDetails details, long id, String username) {
         Algorithm algorithm = Algorithm.HMAC256(key);
         return JWT.create()
                 .withJWTId(String.valueOf(UUID.randomUUID()))

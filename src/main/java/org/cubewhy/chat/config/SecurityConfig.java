@@ -3,19 +3,20 @@ package org.cubewhy.chat.config;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.RestBean;
+import org.cubewhy.chat.entity.UserDetailsImpl;
 import org.cubewhy.chat.entity.vo.AuthorizeVO;
 import org.cubewhy.chat.filter.JwtAuthorizeFilter;
 import org.cubewhy.chat.service.AccountService;
-import org.cubewhy.chat.service.CustomUserDetailsService;
-import org.cubewhy.chat.util.CustomAuthenticationProvider;
+import org.cubewhy.chat.service.UserDetailsServiceImpl;
 import org.cubewhy.chat.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -23,13 +24,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -42,8 +42,6 @@ public class SecurityConfig {
     AccountService accountService;
     @Resource
     JwtAuthorizeFilter jwtAuthorizeFilter;
-    @Resource
-    DataSource dataSource;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -52,13 +50,18 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService();
+        return new UserDetailsServiceImpl();
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        return new CustomAuthenticationProvider();
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+
+        return authProvider;
     }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -123,12 +126,13 @@ public class SecurityConfig {
         response.getWriter().write(RestBean.unauthorized(exception).toJson());
     }
 
+    @Transactional
     private void onAuthenticationSuccessful(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
-        User user = (User) authentication.getPrincipal();
-        Account account = accountService.findAccountByNameOrEmail(user.getUsername());
-        String token = jwtUtil.createJwt(user, 1, account.getUsername());
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        Account account = user.getAccount();
+        String token = jwtUtil.createJwt(user, account.getId(), account.getUsername());
         AuthorizeVO authorizeVO = account.asViewObject(AuthorizeVO.class, authorizeVO1 -> {
             authorizeVO1.setExpire(jwtUtil.getExpireDate().getTime());
             authorizeVO1.setToken(token);
