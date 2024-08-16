@@ -5,11 +5,12 @@ import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import java.security.Principal;
 import java.util.Set;
 
 @Data
 @Entity
-public class Account implements BaseData {
+public class Account implements BaseData, Principal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,4 +32,9 @@ public class Account implements BaseData {
     private String nickname;
     private String email;
     private String bio;
+
+    @Override
+    public String getName() {
+        return username;
+    }
 }

@@ -17,10 +17,9 @@ public class ChatController {
     @Resource
     KafkaProducerService kafkaProducerService;
 
-    @MessageMapping("/sendMessage")
+    @MessageMapping("/send/{channel}")
     @SendTo("/topic/channel")
     public Message broadcastChannelMessage(@Payload Message message) {
-        log.info("OK");
         kafkaProducerService.sendMessage(KafkaConstants.KAFKA_TOPIC, message);
         return message;
     }
