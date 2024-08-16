@@ -1,5 +1,6 @@
 package org.cubewhy.chat.service;
 
+import org.cubewhy.chat.entity.Message;
 import org.cubewhy.chat.util.KafkaConstants;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -15,7 +16,7 @@ public class KafkaConsumerService {
     }
 
     @KafkaListener(topics = KafkaConstants.KAFKA_TOPIC, groupId = KafkaConstants.GROUP_ID)
-    public void listen(String message) {
+    public void listen(Message message) {
         messagingTemplate.convertAndSend("/topic/channel", message);
     }
 }
