@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: QMsgBackend
+  security:
+    jwt:
+      # 实际部署请修改这个
+      key: zzyss-please-mod-this
+      expire: 7
+  datasource:
+    url: jdbc:h2:file:./qmsgdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
