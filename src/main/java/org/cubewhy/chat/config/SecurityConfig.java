@@ -69,6 +69,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         conf -> conf
                                 .requestMatchers("/").permitAll()
+                                .requestMatchers("/ws/**").permitAll()
                                 .requestMatchers("/dashboard").hasAuthority(Permission.DASHBOARD.name())
                                 .anyRequest().authenticated()
                 )
@@ -127,7 +128,7 @@ public class SecurityConfig {
     }
 
     @Transactional
-    private void onAuthenticationSuccessful(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    protected void onAuthenticationSuccessful(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();

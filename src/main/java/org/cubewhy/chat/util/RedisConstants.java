@@ -1,6 +1,6 @@
 package org.cubewhy.chat.util;
 
-public interface Const {
+public interface RedisConstants {
     String JWT_BLACKLIST = "qbychat:jwt:bl:";
     String ACCOUNT_VERIFY = "qbychat:account:verify:";
     String INVITATION = "qbychat:account:invitation:";

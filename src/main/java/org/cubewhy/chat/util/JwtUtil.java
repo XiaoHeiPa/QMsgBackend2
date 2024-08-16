@@ -65,12 +65,12 @@ public class JwtUtil {
             return false;
         }
         // add to blocklist
-        template.opsForValue().set(Const.JWT_BLACKLIST + uuid, "", expire, TimeUnit.MILLISECONDS);
+        template.opsForValue().set(RedisConstants.JWT_BLACKLIST + uuid, "", expire, TimeUnit.MILLISECONDS);
         return true;
     }
 
     public boolean isInvalidToken(String uuid) {
-        return Boolean.TRUE.equals(template.hasKey(Const.JWT_BLACKLIST + uuid));
+        return Boolean.TRUE.equals(template.hasKey(RedisConstants.JWT_BLACKLIST + uuid));
     }
 
     private boolean isExpire() {

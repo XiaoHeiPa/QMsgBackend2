@@ -1,6 +1,8 @@
 spring:
   application:
     name: QMsgBackend
+  kafka:
+    bootstrap-servers: localhost:9092
   security:
     jwt:
       # 实际部署请修改这个
