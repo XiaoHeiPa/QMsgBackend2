@@ -39,7 +39,7 @@ public class JwtUtil {
 
     /**
      * 拉黑JWT
-     * */
+     */
     public boolean invalidateJwt(String headerToken) {
         String token = convertToken(headerToken);
         if (token == null) return false;
@@ -79,7 +79,7 @@ public class JwtUtil {
 
     /**
      * 解析JWT
-     * */
+     */
     public DecodedJWT resolveJwt(String headerToken) {
         String token = this.convertToken(headerToken);
         if (token == null) {

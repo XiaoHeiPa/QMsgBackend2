@@ -1,7 +1,6 @@
 package org.cubewhy.chat.service;
 
 import jakarta.annotation.Resource;
-import jakarta.transaction.Transactional;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.UserDetailsImpl;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -2,9 +2,7 @@ package org.cubewhy.chat.config;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.Resource;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.cubewhy.chat.entity.Account;
-import org.cubewhy.chat.entity.UserDetailsImpl;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.util.JwtUtil;
 import org.jetbrains.annotations.NotNull;
@@ -17,14 +15,12 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import java.util.Map;
 import java.util.Objects;
 
 @EnableWebSocket

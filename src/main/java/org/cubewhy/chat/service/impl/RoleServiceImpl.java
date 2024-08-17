@@ -10,7 +10,6 @@ import org.cubewhy.chat.service.RoleService;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 

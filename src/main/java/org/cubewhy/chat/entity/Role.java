@@ -1,13 +1,9 @@
 package org.cubewhy.chat.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.cubewhy.chat.conventer.PermissionConverter;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
