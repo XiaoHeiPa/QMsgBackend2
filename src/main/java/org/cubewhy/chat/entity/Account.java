@@ -6,6 +6,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -32,6 +33,9 @@ public class Account implements BaseData, Principal {
     private String nickname;
     private String email;
     private String bio;
+
+    @OneToMany(mappedBy = "user")
+    private List<ChannelUser> channelUsers;
 
     @Override
     public String getName() {

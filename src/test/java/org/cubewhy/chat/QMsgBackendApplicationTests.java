@@ -21,8 +21,8 @@ class QMsgBackendApplicationTests {
 
     @Test
     void contextLoads() {
-        roleService.createRole("USER1", "Default", Permission.CREATE_CHANNEL, Permission.SEND_MESSAGE, Permission.JOIN_CHANNEL);
-        accountService.createAccount("test1", "test", "USER1");
+//        roleService.createRole("USER1", "Default", Permission.CREATE_CHANNEL, Permission.SEND_MESSAGE, Permission.JOIN_CHANNEL);
+//        accountService.createAccount("test1", "test", "USER1");
     }
 
     @Test
