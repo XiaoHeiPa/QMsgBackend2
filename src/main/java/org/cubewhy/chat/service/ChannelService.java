@@ -1,8 +1,10 @@
 package org.cubewhy.chat.service;
 
+import jakarta.transaction.Transactional;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.Channel;
 import org.cubewhy.chat.entity.ChannelUser;
+import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.dto.ChannelDTO;
 
 import java.util.List;
@@ -19,7 +21,8 @@ public interface ChannelService {
 
     List<Channel> getAllChannels();
 
-    void addUserToChannel(Long channelId, Long userId);
+    @Transactional
+    void addUserToChannel(Long channelId, Long userId, Permission... permissions);
 
     void removeUserFromChannel(Long channelId, Long userId);
 

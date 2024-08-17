@@ -2,8 +2,10 @@ package org.cubewhy.chat.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.cubewhy.chat.conventer.PermissionConverter;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @Entity
@@ -21,4 +23,7 @@ public class ChannelUser {
     private Account user;
 
     private LocalDateTime joinedAt; // Additional attribute
+
+    @Convert(converter = PermissionConverter.class)
+    private Set<Permission> permissions;
 }

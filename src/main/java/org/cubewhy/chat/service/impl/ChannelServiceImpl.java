@@ -15,8 +15,10 @@ import org.cubewhy.chat.service.ChannelService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ChannelServiceImpl implements ChannelService {
@@ -74,9 +76,9 @@ public class ChannelServiceImpl implements ChannelService {
         return channelRepository.findAll();
     }
 
-    @Override
     @Transactional
-    public void addUserToChannel(Long channelId, Long userId) {
+    @Override
+    public void addUserToChannel(Long channelId, Long userId, Permission... permissions) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new EntityNotFoundException("Channel not found"));
         Account user = userRepository.findById(userId)
@@ -86,6 +88,7 @@ public class ChannelServiceImpl implements ChannelService {
         channelUser.setChannel(channel);
         channelUser.setUser(user);
         channelUser.setJoinedAt(LocalDateTime.now());
+        channelUser.setPermissions(Arrays.stream(permissions).collect(Collectors.toSet()));
 
         channelUserRepository.save(channelUser);
     }

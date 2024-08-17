@@ -1,12 +1,14 @@
 package org.cubewhy.chat.entity;
 
 public enum Permission {
-    // admin permissions
+    // servlet admin rights
     DASHBOARD, // 访问后端的仪表盘
     MANAGE_USER, // 管理所有用户
+    // servlet admin & channel admin rights
     MANAGE_CHANNEL, // 管理频道
-    MANAGE_GROUP, // 管理所有群组
     REGISTER_INVITE, // 生成注册邀请
+    DISBAND_CHANNEL, // 解散频道
+    KICK_USERS, // 频道内为踢出成员,服务器内为注销账户
 
     // user permissions
     SEND_MESSAGE, // 发送消息
