@@ -14,7 +14,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private ChatMessageRepository chatMessageRepository;
 
     @Override
-    public ChatMessage saveMessage(ChatMessageDTO message, int channelId, Account sender) {
+    public ChatMessage saveMessage(ChatMessageDTO message, long channelId, Account sender) {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setChannel(channelId);
         chatMessage.setSender(sender.getId());

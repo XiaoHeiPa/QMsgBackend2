@@ -19,7 +19,6 @@ public class ChatMessage implements BaseData {
     private long sender;
     private String contentType; // 给客户端看的
     @Convert(converter = MessageContentConverter.class)
-    @Convert(converter = CryptConverter.class)
     private JSONObject content;
     private long timestamp;
 }
