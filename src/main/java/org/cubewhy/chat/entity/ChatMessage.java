@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
+import org.cubewhy.chat.conventer.CryptConverter;
 import org.cubewhy.chat.conventer.MessageContentConverter;
 
 @Data
@@ -18,6 +19,7 @@ public class ChatMessage implements BaseData {
     private long sender;
     private String contentType; // 给客户端看的
     @Convert(converter = MessageContentConverter.class)
+    @Convert(converter = CryptConverter.class)
     private JSONObject content;
     private long timestamp;
 }

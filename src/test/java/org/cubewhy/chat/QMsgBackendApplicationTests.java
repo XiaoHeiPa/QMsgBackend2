@@ -26,15 +26,15 @@ class QMsgBackendApplicationTests {
 
     @Test
     void contextLoads() {
-//        Role role = roleService.createRole("USER1", "Default", Permission.CREATE_CHANNEL, Permission.SEND_MESSAGE, Permission.JOIN_CHANNEL);
-//        Account account = accountService.createAccount("test1", "test", role);
-//        Channel channel = channelService.createChannel(ChannelDTO.builder()
-//                .title("Test")
-//                .name("test")
-//                .description("test")
-//                .build());
-//        System.out.println(channel.getName() + " "+ channel.getId());
-//        channelService.addUserToChannel(channel.getId(), account.getId());
+        Role role = roleService.createRole("USER1", "Default", Permission.CREATE_CHANNEL, Permission.SEND_MESSAGE, Permission.JOIN_CHANNEL);
+        Account account = accountService.createAccount("test1", "test", role);
+        Channel channel = channelService.createChannel(ChannelDTO.builder()
+                .title("Test")
+                .name("test")
+                .description("test")
+                .build());
+        System.out.println(channel.getName() + " "+ channel.getId());
+        channelService.addUserToChannel(channel.getId(), account.getId(), Permission.CREATE_CHANNEL);
     }
 
     @Test

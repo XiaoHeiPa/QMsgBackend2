@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -88,8 +89,11 @@ public class ChannelServiceImpl implements ChannelService {
         channelUser.setChannel(channel);
         channelUser.setUser(user);
         channelUser.setJoinedAt(LocalDateTime.now());
-        channelUser.setPermissions(Arrays.stream(permissions).collect(Collectors.toSet()));
-
+        if (permissions.length == 0) {
+            channelUser.setPermissions(Collections.emptySet());
+        } else {
+            channelUser.setPermissions(Arrays.stream(permissions).collect(Collectors.toSet()));
+        }
         channelUserRepository.save(channelUser);
     }
 

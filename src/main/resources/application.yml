@@ -1,6 +1,9 @@
 spring:
   application:
     name: QMsgBackend
+    # AES/ECB/PKCS5 Key 长度必须为16
+    # 实际部署请修改此值
+    crypt-key: powered-by-zzyss
   kafka:
     bootstrap-servers: localhost:9092
   security:
