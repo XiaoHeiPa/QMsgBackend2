@@ -4,6 +4,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.Resource;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.service.AccountService;
+import org.cubewhy.chat.service.ChannelService;
 import org.cubewhy.chat.util.JwtUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     JwtUtil jwtUtil;
     @Resource
     AccountService accountService;
+    @Resource
+    ChannelService channelService;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -65,6 +68,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     return null;
                 }
                 return message;
+            }
+
+            @Override
+            public void afterSendCompletion(@NotNull Message<?> message, @NotNull MessageChannel channel, boolean sent, Exception ex) {
+                String destination = message.getHeaders().get("simpDestination", String.class);
+                StompHeaderAccessor accessor =
+                        MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+                Account account = (Account) Objects.requireNonNull(accessor).getUser();
+                if (destination != null && destination.startsWith("/topic/channel") && !channelService.hasViewPermission(account, Long.parseLong(destination.split("/")[2]))) {
+                    throw new IllegalArgumentException("You have no permission to view this channel");
+                }
+                ChannelInterceptor.super.afterSendCompletion(message, channel, sent, ex);
             }
         });
     }

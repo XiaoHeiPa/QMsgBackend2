@@ -6,6 +6,7 @@ import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.Role;
 import org.cubewhy.chat.repository.AccountRepository;
 import org.cubewhy.chat.service.AccountService;
+import org.cubewhy.chat.service.ChannelService;
 import org.cubewhy.chat.service.RoleService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,8 @@ public class AccountServiceImpl implements AccountService {
     PasswordEncoder passwordEncoder;
     @Resource
     RoleService roleService;
+    @Resource
+    ChannelService channelService;
 
     @Override
     @Transactional
@@ -31,6 +34,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findByUsername(usernameOrEmail).orElse(accountRepository.findByEmail(usernameOrEmail).orElse(null));
         if (account == null) return null;
         account.setRoles(roleService.findAll(account));
+        account.setChannelUsers(channelService.findChannelUsers(account));
         return account;
     }
 

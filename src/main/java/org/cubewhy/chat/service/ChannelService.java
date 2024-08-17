@@ -2,6 +2,7 @@ package org.cubewhy.chat.service;
 
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.Channel;
+import org.cubewhy.chat.entity.ChannelUser;
 import org.cubewhy.chat.entity.dto.ChannelDTO;
 
 import java.util.List;
@@ -23,4 +24,8 @@ public interface ChannelService {
     void removeUserFromChannel(Long channelId, Long userId);
 
     List<Account> getUsersInChannel(Long channelId);
+
+    boolean hasViewPermission(Account account, long channelId);
+
+    List<ChannelUser> findChannelUsers(Account account);
 }

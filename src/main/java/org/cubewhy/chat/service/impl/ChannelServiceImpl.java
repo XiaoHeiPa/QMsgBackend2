@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.Channel;
 import org.cubewhy.chat.entity.ChannelUser;
+import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.dto.ChannelDTO;
 import org.cubewhy.chat.repository.AccountRepository;
 import org.cubewhy.chat.repository.ChannelRepository;
@@ -102,5 +103,17 @@ public class ChannelServiceImpl implements ChannelService {
     public List<Account> getUsersInChannel(Long channelId) {
         List<ChannelUser> channelUsers = channelUserRepository.findByChannelId(channelId);
         return channelUsers.stream().map(ChannelUser::getUser).toList();
+    }
+
+    @Override
+    public boolean hasViewPermission(Account account, long channelId) {
+        if (!account.getPermissions().contains(Permission.VIEW_CHANNEL)) return false;
+        ChannelUser channelUser = channelUserRepository.findByChannelIdAndUserId(channelId, account.getId());
+        return channelUser != null;
+    }
+
+    @Override
+    public List<ChannelUser> findChannelUsers(Account account) {
+        return channelUserRepository.findByUserId(account.getId());
     }
 }

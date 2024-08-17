@@ -12,5 +12,6 @@ public enum Permission {
     SEND_MESSAGE, // 发送消息
     CREATE_CHANNEL, // 创建频道
     JOIN_CHANNEL, // 加入频道
+    VIEW_CHANNEL,
     SEND_CHANNEL_INVITE // 发送加频道邀请
 }

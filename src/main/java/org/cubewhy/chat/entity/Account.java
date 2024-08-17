@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -38,5 +39,13 @@ public class Account implements BaseData, Principal {
     @Override
     public String getName() {
         return username;
+    }
+
+    public Set<Permission> getPermissions() {
+        Set<Permission> permissions = new HashSet<>();
+        for (Role role : roles) {
+            permissions.addAll(role.getPermissions());
+        }
+        return permissions;
     }
 }
