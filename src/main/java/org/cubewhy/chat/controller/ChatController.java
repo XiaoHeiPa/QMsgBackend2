@@ -7,7 +7,6 @@ import org.cubewhy.chat.entity.ChatMessage;
 import org.cubewhy.chat.entity.dto.ChatMessageDTO;
 import org.cubewhy.chat.entity.vo.ChatMessageVO;
 import org.cubewhy.chat.service.ChatMessageService;
-import org.cubewhy.chat.service.KafkaProducerService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -20,8 +19,6 @@ import java.util.Objects;
 @Log4j2
 @RestController
 public class ChatController {
-    @Resource
-    KafkaProducerService kafkaProducerService;
     @Resource
     ChatMessageService chatMessageService;
 

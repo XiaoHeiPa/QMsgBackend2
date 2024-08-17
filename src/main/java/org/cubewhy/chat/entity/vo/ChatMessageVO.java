@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class ChatMessageVO {
     private long channel;
     private long sender;
+    private String contentType;
     private JSONObject content;
     private long timestamp;
 }

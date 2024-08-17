@@ -5,5 +5,6 @@ import lombok.Data;
 
 @Data
 public class ChatMessageDTO {
+    private String contentType;
     private JSONObject content;
 }
