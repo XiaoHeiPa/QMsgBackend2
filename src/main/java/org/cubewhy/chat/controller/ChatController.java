@@ -2,25 +2,34 @@ package org.cubewhy.chat.controller;
 
 import jakarta.annotation.Resource;
 import lombok.extern.log4j.Log4j2;
-import org.cubewhy.chat.entity.Message;
+import org.cubewhy.chat.entity.Account;
+import org.cubewhy.chat.entity.ChatMessage;
+import org.cubewhy.chat.entity.dto.ChatMessageDTO;
+import org.cubewhy.chat.entity.vo.ChatMessageVO;
+import org.cubewhy.chat.service.ChatMessageService;
 import org.cubewhy.chat.service.KafkaProducerService;
-import org.cubewhy.chat.util.KafkaConstants;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
 
 @Log4j2
 @RestController
 public class ChatController {
     @Resource
     KafkaProducerService kafkaProducerService;
+    @Resource
+    ChatMessageService chatMessageService;
 
     @MessageMapping("/send/{channel}")
-    @SendTo("/topic/channel")
-    public Message broadcastChannelMessage(@Payload Message message) {
-        kafkaProducerService.sendMessage(KafkaConstants.KAFKA_TOPIC, message);
-        return message;
+    @SendTo("/topic/channel/{channel}")
+    public ChatMessageVO broadcastChannelMessage(@Payload ChatMessageDTO message, @DestinationVariable int channel, StompHeaderAccessor headerAccessor) {
+        Account account = (Account) Objects.requireNonNull(headerAccessor.getUser());
+        ChatMessage chatMessage = chatMessageService.saveMessage(message, channel, account);
+        return chatMessage.asViewObject(ChatMessageVO.class);
     }
 }

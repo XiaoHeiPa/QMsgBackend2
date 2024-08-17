@@ -1,7 +1,7 @@
 package org.cubewhy.chat.service;
 
 import jakarta.annotation.Resource;
-import org.cubewhy.chat.entity.Message;
+import org.cubewhy.chat.entity.ChatMessage;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 public class KafkaProducerService {
 
     @Resource
-    KafkaTemplate<String, Message> kafkaTemplate;
+    KafkaTemplate<String, ChatMessage> kafkaTemplate;
 
 
-    public void sendMessage(String topic, Message message) {
+    public void sendMessage(String topic, ChatMessage message) {
         kafkaTemplate.send(topic, message);
     }
 }

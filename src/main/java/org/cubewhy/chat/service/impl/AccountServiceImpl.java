@@ -35,7 +35,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional
     @Override
-    public Account createAccount(String username, String rawPassword, Set<String> roleNames) {
+    public Account createAccount(String username, String rawPassword, String... roleNames) {
         // Check if the username already exists
         if (accountRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("Username already exists");
