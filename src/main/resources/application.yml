@@ -16,3 +16,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  cache:
+    type: redis
+    redis:
+      time-to-live: 5s
