@@ -30,6 +30,8 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public Channel createChannel(ChannelDTO channelDTO) {
+        Optional<Channel> existChannel = channelRepository.findByName(channelDTO.getName());
+        if (existChannel.isPresent()) return existChannel.get();
         Channel channel = new Channel();
         channel.setName(channelDTO.getName());
         channel.setTitle(channelDTO.getTitle());

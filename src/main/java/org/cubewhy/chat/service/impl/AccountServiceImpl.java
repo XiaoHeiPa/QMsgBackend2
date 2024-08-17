@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -35,11 +36,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional
     @Override
-    public Account createAccount(String username, String rawPassword, String... roleNames) {
+    public Account createAccount(String username, String rawPassword, Role... roles1) {
         // Check if the username already exists
-        if (accountRepository.findByUsername(username).isPresent()) {
-            throw new RuntimeException("Username already exists");
-        }
+        Optional<Account> existAccount = accountRepository.findByUsername(username);
+        if (existAccount.isPresent()) return existAccount.get();
 
         // Create a new account
         Account account = new Account();
@@ -48,12 +48,6 @@ public class AccountServiceImpl implements AccountService {
 
         // Fetch roles from the database
         Set<Role> roles = new HashSet<>();
-        for (String roleName : roleNames) {
-            Role role = roleService.findByName(roleName);
-            if (role != null) {
-                roles.add(role);
-            }
-        }
         account.setRoles(roles);
 
         // Save the account to the database

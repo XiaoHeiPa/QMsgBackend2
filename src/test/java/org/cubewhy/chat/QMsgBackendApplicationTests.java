@@ -1,14 +1,17 @@
 package org.cubewhy.chat;
 
 import jakarta.annotation.Resource;
+import org.cubewhy.chat.entity.Account;
+import org.cubewhy.chat.entity.Channel;
 import org.cubewhy.chat.entity.Permission;
+import org.cubewhy.chat.entity.Role;
+import org.cubewhy.chat.entity.dto.ChannelDTO;
 import org.cubewhy.chat.service.AccountService;
+import org.cubewhy.chat.service.ChannelService;
 import org.cubewhy.chat.service.RoleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.util.Collections;
 
 @SpringBootTest
 class QMsgBackendApplicationTests {
@@ -18,11 +21,20 @@ class QMsgBackendApplicationTests {
     AccountService accountService;
     @Resource
     RoleService roleService;
+    @Resource
+    ChannelService channelService;
 
     @Test
     void contextLoads() {
-//        roleService.createRole("USER1", "Default", Permission.CREATE_CHANNEL, Permission.SEND_MESSAGE, Permission.JOIN_CHANNEL);
-//        accountService.createAccount("test1", "test", "USER1");
+//        Role role = roleService.createRole("USER1", "Default", Permission.CREATE_CHANNEL, Permission.SEND_MESSAGE, Permission.JOIN_CHANNEL);
+//        Account account = accountService.createAccount("test1", "test", role);
+//        Channel channel = channelService.createChannel(ChannelDTO.builder()
+//                .title("Test")
+//                .name("test")
+//                .description("test")
+//                .build());
+//        System.out.println(channel.getName() + " "+ channel.getId());
+//        channelService.addUserToChannel(channel.getId(), account.getId());
     }
 
     @Test
