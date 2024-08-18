@@ -9,6 +9,7 @@ import org.cubewhy.chat.service.ChatMessageService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,7 +29,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     public Page<ChatMessage> getMessagesByChannel(long channel, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("id")));
         return chatMessageRepository.findByChannel(channel, pageable);
     }
 

@@ -15,7 +15,10 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -34,5 +37,12 @@ public class ChatController {
         Account account = (Account) Objects.requireNonNull(headerAccessor.getUser());
         ChatMessage chatMessage = chatMessageService.saveMessage(message, channel, account);
         return chatMessage.asViewObject(ChatMessageVO.class);
+    }
+
+
+    @GetMapping("/channel/messages")
+    public Flux<ChatMessageVO> getChannelMessages(@RequestParam int channel, @RequestParam int page, @RequestParam int size) {
+        return Flux.fromIterable(chatMessageService.getMessagesByChannel(channel, page, size)
+                .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class)));
     }
 }
