@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.Channel;
 import org.cubewhy.chat.entity.ChatMessage;
+import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.dto.ChatMessageDTO;
 import org.cubewhy.chat.entity.vo.ChatMessageVO;
 import org.cubewhy.chat.service.ChannelService;
@@ -35,6 +36,7 @@ public class ChatController {
     @SendTo("/topic/channel/{channel}")
     public ChatMessageVO broadcastChannelMessage(@Payload ChatMessageDTO message, @DestinationVariable int channel, StompHeaderAccessor headerAccessor) {
         Account account = (Account) Objects.requireNonNull(headerAccessor.getUser());
+        if (!account.getPermissions().contains(Permission.SEND_MESSAGE)) return null;
         ChatMessage chatMessage = chatMessageService.saveMessage(message, channel, account);
         return chatMessage.asViewObject(ChatMessageVO.class);
     }
