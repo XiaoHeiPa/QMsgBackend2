@@ -50,6 +50,8 @@ public class Account implements BaseData, Principal {
 
     @OneToMany(mappedBy = "user")
     private List<ChannelUser> channelUsers;
+    @OneToMany(mappedBy = "uploadUser")
+    private List<UserUpload> uploadFiles;
 
     @Override
     public String getName() {
