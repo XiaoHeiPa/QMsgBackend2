@@ -9,6 +9,8 @@ public enum Permission {
     REGISTER_INVITE, // 生成注册邀请
     DISBAND_CHANNEL, // 解散频道
     KICK_USERS, // 频道内为踢出成员,服务器内为注销账户
+    // channel admin rights
+    PROCESS_JOIN_REQUEST,
 
     // user permissions
     SEND_MESSAGE, // 发送消息
