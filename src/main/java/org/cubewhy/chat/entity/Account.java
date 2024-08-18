@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,11 +28,25 @@ public class Account implements BaseData, Principal {
             joinColumns = @JoinColumn(name = "account_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     private String nickname;
     private String email;
     private String bio;
+
+    private LocalDateTime registerTime;
+    private LocalDateTime updatedTime;
+
+    @PrePersist
+    protected void onCreate() {
+        this.registerTime = LocalDateTime.now();
+        this.updatedTime = registerTime;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedTime = LocalDateTime.now();
+    }
 
     @OneToMany(mappedBy = "user")
     private List<ChannelUser> channelUsers;

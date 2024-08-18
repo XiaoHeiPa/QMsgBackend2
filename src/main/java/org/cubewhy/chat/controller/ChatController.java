@@ -1,6 +1,7 @@
 package org.cubewhy.chat.controller;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.Channel;
@@ -17,15 +18,18 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
+import java.time.ZoneOffset;
 import java.util.Objects;
 import java.util.Optional;
 
 @Log4j2
 @RestController
+@RequestMapping("/chat")
 public class ChatController {
     @Resource
     ChatMessageService chatMessageService;
@@ -43,8 +47,12 @@ public class ChatController {
 
 
     @GetMapping("/channel/messages")
-    public Flux<ChatMessageVO> getChannelMessages(@RequestParam int channel, @RequestParam int page, @RequestParam int size) {
+    public Flux<ChatMessageVO> getChannelMessages(HttpServletRequest request, @RequestParam int channel, @RequestParam int page, @RequestParam int size) {
+        Account account = (Account) request.getUserPrincipal();
+        if (!channelService.hasViewPermission(account, channel)) return null;
         return Flux.fromIterable(chatMessageService.getMessagesByChannel(channel, page, size)
-                .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class)));
+                .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class, (vo) -> {
+                    vo.setTimestamp(chatMessage.getTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli());
+                })));
     }
 }

@@ -12,4 +12,6 @@ public interface RoleService {
     Role createRole(String name, String description, Permission... permissions);
 
     Set<Role> findAll(Account account);
+
+    Role findById(long id);
 }

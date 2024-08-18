@@ -17,7 +17,7 @@ public class Channel {
     private String description;
 
     private String iconHash;
-
+    private boolean publicGroup = false;
 
     @OneToMany(mappedBy = "channel")
     private List<ChannelUser> channelUsers;

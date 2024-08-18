@@ -67,8 +67,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         conf -> conf
                                 .requestMatchers("/").permitAll()
-                                .requestMatchers("/ws/**").permitAll()
-                                .requestMatchers("/dashboard").hasAuthority(Permission.DASHBOARD.name())
+                                .requestMatchers("/admin/dashboard**").hasAuthority(Permission.DASHBOARD.name())
+                                .requestMatchers("/admin/user/**").hasAuthority(Permission.MANAGE_USER.name())
+                                .requestMatchers("/admin/channel/**").hasAuthority(Permission.MANAGE_CHANNEL.name())
+                                .requestMatchers("/admin/role/**").hasAuthority(Permission.MANAGE_ROLES.name())
                                 .anyRequest().authenticated()
                 )
                 .formLogin(

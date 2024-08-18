@@ -23,7 +23,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chatMessage.setChannel(channelId);
         chatMessage.setSender(sender.getId());
         chatMessage.setContent(message.getContent());
-        chatMessage.setTimestamp(System.currentTimeMillis());
         return chatMessageRepository.save(chatMessage);
     }
 

@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -38,6 +39,17 @@ public class AccountServiceImpl implements AccountService {
         return account;
     }
 
+    @Override
+    @Transactional
+    public Account findAccountById(long id) {
+        Optional<Account> accountOptional = accountRepository.findById(id);
+        if (accountOptional.isEmpty()) return null;
+        Account account = accountOptional.get();
+        account.setRoles(roleService.findAll(account));
+        account.setChannelUsers(channelService.findChannelUsers(account));
+        return account;
+    }
+
     @Transactional
     @Override
     public Account createAccount(String username, String rawPassword, Role... roles1) {
@@ -55,6 +67,27 @@ public class AccountServiceImpl implements AccountService {
         account.setRoles(roles);
 
         // Save the account to the database
+        return accountRepository.save(account);
+    }
+
+    @Override
+    public Account createAccount(Account account) {
+        Optional<Account> existAccount = accountRepository.findById(account.getId());
+        return existAccount.orElseGet(() -> accountRepository.save(account));
+    }
+
+    @Override
+    public List<Account> findAllAccounts() {
+        return accountRepository.findAll();
+    }
+
+    @Override
+    public void deleteAccountById(long id) {
+        accountRepository.deleteById(id);
+    }
+
+    @Override
+    public Account save(Account account) {
         return accountRepository.save(account);
     }
 }
