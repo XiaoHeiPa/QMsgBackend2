@@ -67,6 +67,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         conf -> conf
                                 .requestMatchers("/").permitAll()
+                                .requestMatchers("/favicon.ico").permitAll()
                                 .requestMatchers("/admin/dashboard**").hasAuthority(Permission.DASHBOARD.name())
                                 .requestMatchers("/admin/user/**").hasAuthority(Permission.MANAGE_USER.name())
                                 .requestMatchers("/admin/channel/**").hasAuthority(Permission.MANAGE_CHANNEL.name())
