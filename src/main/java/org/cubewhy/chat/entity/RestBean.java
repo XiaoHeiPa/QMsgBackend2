@@ -43,6 +43,10 @@ public record RestBean<T>(int code, T data, String message) {
         return failure(code, exception.getMessage());
     }
 
+    public static RestBean<String> badRequest(String message) {
+        return new RestBean<>(400, null, message);
+    }
+
     public String toJson() {
         return JSONObject.toJSONString(this, JSONWriter.Feature.WriteNulls);
     }

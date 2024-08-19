@@ -3,6 +3,7 @@ package org.cubewhy.chat.service.impl;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.cubewhy.chat.entity.Account;
+import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.Role;
 import org.cubewhy.chat.repository.AccountRepository;
 import org.cubewhy.chat.service.AccountService;
@@ -12,10 +13,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -89,5 +87,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account save(Account account) {
         return accountRepository.save(account);
+    }
+
+    @Override
+    public boolean checkPermission(Account account, Permission... permission) {
+        return account.getPermissions().containsAll(Arrays.asList(permission));
     }
 }

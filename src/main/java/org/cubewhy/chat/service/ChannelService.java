@@ -1,10 +1,7 @@
 package org.cubewhy.chat.service;
 
 import jakarta.transaction.Transactional;
-import org.cubewhy.chat.entity.Account;
-import org.cubewhy.chat.entity.Channel;
-import org.cubewhy.chat.entity.ChannelUser;
-import org.cubewhy.chat.entity.Permission;
+import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.dto.ChannelDTO;
 
 import java.util.List;
@@ -21,7 +18,7 @@ public interface ChannelService {
 
     void deleteChannel(Long channelId);
 
-    Optional<Channel> getChannelById(Long channelId);
+    Channel findChannelById(Long channelId);
 
     List<Channel> getAllChannels();
 
@@ -43,9 +40,23 @@ public interface ChannelService {
 
     boolean approveJoinRequest(Long requestId);
 
+    @Transactional
+    boolean approveJoinRequest(ChannelJoinRequest request);
+
     boolean rejectJoinRequest(Long requestId);
+
+    boolean rejectJoinRequest(ChannelJoinRequest joinRequest);
 
     Channel approveFriendRequest(Long requestId);
 
+    @Transactional
+    Channel approveFriendRequest(FriendRequest request);
+
     boolean rejectFriendRequest(Long requestId);
+
+    boolean checkPermissions(Account account, Channel channel, Permission... permissions);
+
+    boolean rejectFriendRequest(FriendRequest request);
+
+    ChannelJoinRequest findJoinRequestById(long id);
 }

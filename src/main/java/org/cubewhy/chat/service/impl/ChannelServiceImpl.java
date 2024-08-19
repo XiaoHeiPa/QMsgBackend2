@@ -94,8 +94,8 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public Optional<Channel> getChannelById(Long channelId) {
-        return channelRepository.findById(channelId);
+    public Channel findChannelById(Long channelId) {
+        return channelRepository.findById(channelId).orElse(null);
     }
 
     @Override
@@ -176,19 +176,29 @@ public class ChannelServiceImpl implements ChannelService {
         Optional<ChannelJoinRequest> joinRequest = channelJoinRequestRepository.findById(requestId);
         if (joinRequest.isEmpty()) return false;
         ChannelJoinRequest request = joinRequest.get();
+        return approveJoinRequest(request);
+    }
+
+    @Transactional
+    @Override
+    public boolean approveJoinRequest(ChannelJoinRequest request) {
         Long channelId = request.getChannelId();
-        Optional<Channel> channelOptional = this.getChannelById(channelId);
-        if (channelOptional.isEmpty()) return false;
-        this.addUserToChannel(channelId, request.getUserId(), Permission.SEND_MESSAGE, Permission.VIEW_CHANNEL);
-        channelJoinRequestRepository.deleteById(requestId);
+        Channel channel = this.findChannelById(channelId);
+        if (channel == null) return false;
+        this.addUserToChannel(channel, accountService.findAccountById(request.getUserId()), Permission.SEND_MESSAGE, Permission.VIEW_CHANNEL);
+        channelJoinRequestRepository.delete(request);
         return true;
     }
 
     @Override
     public boolean rejectJoinRequest(Long requestId) {
         Optional<ChannelJoinRequest> joinRequest = channelJoinRequestRepository.findById(requestId);
-        if (joinRequest.isEmpty()) return false;
-        channelJoinRequestRepository.delete(joinRequest.get());
+        return joinRequest.filter(this::rejectJoinRequest).isPresent();
+    }
+
+    @Override
+    public boolean rejectJoinRequest(ChannelJoinRequest joinRequest) {
+        channelJoinRequestRepository.delete(joinRequest);
         return true;
     }
 
@@ -196,8 +206,12 @@ public class ChannelServiceImpl implements ChannelService {
     @Transactional
     public Channel approveFriendRequest(Long requestId) {
         Optional<FriendRequest> friendRequest = friendRequestRepository.findById(requestId);
-        if (friendRequest.isEmpty()) return null;
-        FriendRequest request = friendRequest.get();
+        return friendRequest.map(this::approveFriendRequest).orElse(null);
+    }
+
+    @Transactional
+    @Override
+    public Channel approveFriendRequest(FriendRequest request) {
         long from = request.getFrom();
         long to = request.getTo();
         Channel channel = createChannel(ChannelDTO.builder().name("friend_" + from + "_" + to).description("Private channel between " + from + " and " + to).publicChannel(false).decentralized(true).build());
@@ -211,8 +225,22 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public boolean rejectFriendRequest(Long requestId) {
         Optional<FriendRequest> friendRequest = friendRequestRepository.findById(requestId);
-        if (friendRequest.isEmpty()) return false;
-        friendRequestRepository.delete(friendRequest.get());
+        return friendRequest.filter(this::rejectFriendRequest).isPresent();
+    }
+
+    @Override
+    public boolean rejectFriendRequest(FriendRequest request) {
+        friendRequestRepository.delete(request);
         return true;
+    }
+
+    @Override
+    public ChannelJoinRequest findJoinRequestById(long id) {
+        return channelJoinRequestRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public boolean checkPermissions(Account account, Channel channel, Permission... permissions) {
+        return channelUserRepository.findByChannelIdAndUserId(channel.getId(), account.getId()).getPermissions().containsAll(Arrays.asList(permissions));
     }
 }

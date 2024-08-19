@@ -1,6 +1,7 @@
 package org.cubewhy.chat.service;
 
 import org.cubewhy.chat.entity.Account;
+import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.Role;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface AccountService {
     Account findAccountById(long id);
 
     Account save(Account account);
+
+    boolean checkPermission(Account account, Permission... permission);
 }

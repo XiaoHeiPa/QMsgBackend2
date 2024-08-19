@@ -25,9 +25,6 @@ public class FileController {
     @PostMapping("upload")
     public ResponseEntity<RestBean<UserUploadVO>> upload(HttpServletRequest request, MultipartFile file) throws Exception {
         Account account = (Account) request.getUserPrincipal();
-        if (!account.getPermissions().contains(Permission.UPLOAD_FILES)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(RestBean.failure(403, "Forbidden"));
-        }
         UserUpload upload = userUploadService.upload(file, account);
         UserUploadVO uu = upload.asViewObject(UserUploadVO.class, (vo) -> {
             vo.setUploadUser(account.getId());
