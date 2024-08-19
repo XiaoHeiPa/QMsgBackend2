@@ -61,6 +61,10 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+tasks.bootJar {
+    archiveFileName.set("app.jar")
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
