@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Channel {
+public class Channel implements BaseData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
