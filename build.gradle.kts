@@ -27,6 +27,7 @@ repositories {
 extra["snippetsDir"] = file("build/generated-snippets")
 
 dependencies {
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     implementation("commons-io:commons-io:2.16.1")
     implementation("cn.hutool:hutool-crypto:5.8.31")
     implementation("com.auth0:java-jwt:4.4.0")

@@ -68,6 +68,9 @@ public class SecurityConfig {
                         conf -> conf
                                 .requestMatchers("/").permitAll()
                                 .requestMatchers("/favicon.ico").permitAll()
+                                .requestMatchers("/swagger-ui.html").permitAll()
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/channel/create").hasAuthority(Permission.CREATE_CHANNEL.name())
                                 .requestMatchers("/admin/dashboard**").hasAuthority(Permission.DASHBOARD.name())
                                 .requestMatchers("/admin/user/**").hasAuthority(Permission.MANAGE_USER.name())
