@@ -7,6 +7,7 @@ import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.dto.CheckFileDTO;
 import org.cubewhy.chat.entity.vo.DownloadKeyVO;
 import org.cubewhy.chat.entity.vo.UserUploadVO;
+import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.UserUploadService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,17 +15,18 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.ZoneOffset;
-
 @RestController
 @RequestMapping("/api/file")
 public class FileController {
     @Resource
     UserUploadService userUploadService;
 
+    @Resource
+    AccountService accountService;
+
     @PostMapping("upload")
     public ResponseEntity<RestBean<UserUploadVO>> upload(HttpServletRequest request, MultipartFile file) throws Exception {
-        Account account = (Account) request.getUserPrincipal();
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
         UserUpload upload = userUploadService.upload(file, account);
         UserUploadVO uu = upload.asViewObject(UserUploadVO.class, (vo) -> {
             vo.setUploadUser(account.getId());

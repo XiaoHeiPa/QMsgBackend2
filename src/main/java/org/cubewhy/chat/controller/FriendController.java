@@ -24,13 +24,13 @@ public class FriendController {
 
     @PostMapping("request")
     public ResponseEntity<RestBean<FriendRequest>> addFriend(HttpServletRequest request, @RequestBody FriendRequestDTO dto) {
-        Account account = (Account) request.getUserPrincipal();
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
         return ResponseEntity.ok(RestBean.success(channelService.createFriendRequest(dto, account)));
     }
 
     @PostMapping("request/{requestId}/approve")
     public ResponseEntity<RestBean<ChannelVO>> approveFriend(HttpServletRequest request, @PathVariable long requestId) {
-        Account account = (Account) request.getUserPrincipal();
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
         FriendRequest fq = channelService.findFriendRequestById(requestId);
         if (fq.getTo() == account.getId()) {
             Channel channel = channelService.approveFriendRequest(fq);

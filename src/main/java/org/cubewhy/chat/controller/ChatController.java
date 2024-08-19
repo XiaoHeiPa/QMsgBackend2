@@ -8,6 +8,7 @@ import org.cubewhy.chat.entity.ChatMessage;
 import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.dto.ChatMessageDTO;
 import org.cubewhy.chat.entity.vo.ChatMessageVO;
+import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.ChannelService;
 import org.cubewhy.chat.service.ChatMessageService;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -30,8 +31,12 @@ import java.util.Objects;
 public class ChatController {
     @Resource
     ChatMessageService chatMessageService;
+
     @Resource
     ChannelService channelService;
+
+    @Resource
+    AccountService accountService;
 
     @MessageMapping("/send/{channel}")
     @SendTo("/topic/channel/{channel}")
@@ -45,7 +50,7 @@ public class ChatController {
 
     @GetMapping("/channel/messages")
     public Flux<ChatMessageVO> getChannelMessages(HttpServletRequest request, @RequestParam int channel, @RequestParam int page, @RequestParam int size) {
-        Account account = (Account) request.getUserPrincipal();
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
         if (!channelService.hasViewPermission(account, channel)) return null;
         return Flux.fromIterable(chatMessageService.getMessagesByChannel(channel, page, size)
                 .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class)));

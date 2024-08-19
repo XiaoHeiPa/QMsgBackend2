@@ -38,7 +38,7 @@ public class ChannelController {
     @PostMapping("create")
     public ResponseEntity<RestBean<ChannelVO>> createChannel(HttpServletRequest request, @RequestBody ChannelDTO createChannelDTO) {
         Channel channel = channelService.createChannel(createChannelDTO);
-        Account account = (Account) request.getUserPrincipal();
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
         // 将所有权限给创建者
         // 这不会导致滥用,服务器权限会自动忽略
         channelService.addUserToChannel(channel, account, Permission.values());
@@ -73,7 +73,7 @@ public class ChannelController {
 
     @GetMapping("request/list")
     public ResponseEntity<RestBean<List<ChannelJoinRequestVO>>> listPaddingJoinRequests(HttpServletRequest request) {
-        Account account = (Account) request.getUserPrincipal();
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
         List<ChannelJoinRequestVO> requests;
         if (accountService.checkPermission(account, Permission.MANAGE_CHANNEL)) {
             // 是服务器管理员,返回全部加频道请求
@@ -90,7 +90,7 @@ public class ChannelController {
 
     @GetMapping("list")
     public ResponseEntity<RestBean<List<ChannelVO>>> listChannels(HttpServletRequest request) {
-        Account account = (Account) request.getUserPrincipal();
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
         List<ChannelVO> list = accountService.findJoinedChannels(account).stream().map(channel -> channel.asViewObject(ChannelVO.class)).toList();
         return ResponseEntity.ok(RestBean.success(list));
     }
@@ -102,7 +102,7 @@ public class ChannelController {
         if (channelInviteCodeRedisTemplate.opsForValue().get(RedisConstants.CHANNEL_INVITATION + dto.getCode()) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(RestBean.failure(409, "Conflict"));
         }
-        Account account = (Account) request.getUserPrincipal();
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
         ChannelInviteCodeVO vo = new ChannelInviteCodeVO();
         vo.setCode(dto.getCode());
         vo.setCreateUser(account.getId());
@@ -128,13 +128,13 @@ public class ChannelController {
         if (vo == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(RestBean.failure(404, "Not found"));
         if (vo.isExpireAfterUse()) channelInviteCodeRedisTemplate.delete(key);
 
-        Account account = (Account) request.getUserPrincipal();
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
         channelService.addUserToChannel(vo.getChannelId(), account.getId());
         return ResponseEntity.ok(RestBean.success());
     }
 
     private @Nullable ChannelJoinRequest joinRequestOrNull(@NotNull HttpServletRequest request, long requestId) {
-        Account account = (Account) request.getUserPrincipal();
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
         ChannelJoinRequest joinRequest = channelService.findJoinRequestById(requestId);
         Channel channel = channelService.findChannelById(joinRequest.getChannelId());
         if (channelService.checkPermissions(account, channel, Permission.MANAGE_CHANNEL) && accountService.checkPermission(account, Permission.MANAGE_CHANNEL)) {
