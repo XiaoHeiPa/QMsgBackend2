@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class JoinRequest {
+public class ChannelJoinRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

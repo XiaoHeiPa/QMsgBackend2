@@ -110,7 +110,7 @@ public class ChannelServiceImpl implements ChannelService {
         if (channelUser != null) {
             channelUserRepository.delete(channelUser);
             Channel channel = channelUser.getChannel();
-            if (channelUserRepository.findByChannelId(channelId).isEmpty() && channel.isDecentralized()) {
+            if (channelUserRepository.findByChannelId(channelId).size() <= 1 && channel.isDecentralized()) {
                 // 全部人都退出了,自动解散
                 // 非去中心化群组在重新加入后可用
                 this.disbandChannel(channelId);
