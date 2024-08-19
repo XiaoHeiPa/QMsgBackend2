@@ -9,6 +9,7 @@ import org.cubewhy.chat.repository.*;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.ChannelService;
 import org.cubewhy.chat.service.ChatMessageService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,7 +38,9 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Resource
     ChatMessageService chatMessageService;
+
     @Resource
+    @Lazy
     AccountService accountService;
 
     @Override
