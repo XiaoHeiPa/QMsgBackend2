@@ -6,7 +6,10 @@ spring:
     crypt-key: powered-by-zzyss
     # 上传文件的保存目录 使用~代替用户根目录
     # 只要服务端有权限访问就可以 通常不需要手动干涉
-    upload: ~/.cubewhy/messenger/backend
+    upload:
+      dir: ~/.cubewhy/messenger/backend
+      # 密钥失效时间 单位second
+      keyExpire: 600
   kafka:
     bootstrap-servers: localhost:9092
   security:

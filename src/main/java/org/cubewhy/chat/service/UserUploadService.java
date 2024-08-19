@@ -1,6 +1,7 @@
 package org.cubewhy.chat.service;
 
 import org.cubewhy.chat.entity.Account;
+import org.cubewhy.chat.entity.DownloadKey;
 import org.cubewhy.chat.entity.UserUpload;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,4 +21,10 @@ public interface UserUploadService {
     byte[] read(String hash) throws IOException;
 
     UserUpload findByHash(String hash);
+
+    boolean isValidKey(String accessKey, String fileHash);
+
+    DownloadKey generateKey(String hash);
 }
+
+

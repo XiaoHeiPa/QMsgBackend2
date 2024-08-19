@@ -20,5 +20,6 @@ public enum Permission {
     JOIN_CHANNEL, // 加入频道
     VIEW_CHANNEL,
     SEND_CHANNEL_INVITE, // 发送加频道邀请
-    UPLOAD_FILES // 上传文件
+    UPLOAD_FILES, // 上传文件
+    DOWNLOAD_FILES // 下载文件
 }

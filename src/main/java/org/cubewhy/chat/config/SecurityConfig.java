@@ -71,6 +71,8 @@ public class SecurityConfig {
                                 .requestMatchers("/admin/user/**").hasAuthority(Permission.MANAGE_USER.name())
                                 .requestMatchers("/admin/channel/**").hasAuthority(Permission.MANAGE_CHANNEL.name())
                                 .requestMatchers("/admin/role/**").hasAuthority(Permission.MANAGE_ROLES.name())
+                                .requestMatchers("/file/download/*").permitAll()
+                                .requestMatchers("/file/download/*/key").hasAuthority(Permission.DOWNLOAD_FILES.name())
                                 .anyRequest().authenticated()
                 )
                 .formLogin(
