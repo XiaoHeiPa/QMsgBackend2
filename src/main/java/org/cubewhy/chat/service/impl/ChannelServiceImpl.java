@@ -13,10 +13,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -237,6 +234,26 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public ChannelJoinRequest findJoinRequestById(long id) {
         return channelJoinRequestRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<ChannelJoinRequest> findAllJoinRequests() {
+        return channelJoinRequestRepository.findAll();
+    }
+
+    @Override
+    public List<ChannelJoinRequest> findJoinRequestsByAccount(Account account) {
+        List<Channel> channels = accountService.findManagedChannels(account);
+        List<ChannelJoinRequest> result = new ArrayList<>();
+        for (Channel channel : channels) {
+            result.addAll(findJoinRequestByChannel(channel));
+        }
+        return result;
+    }
+
+    @Override
+    public List<ChannelJoinRequest> findJoinRequestByChannel(Channel channel) {
+        return channelJoinRequestRepository.findALlByChannelId(channel.getId());
     }
 
     @Override

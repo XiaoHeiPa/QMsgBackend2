@@ -1,6 +1,7 @@
 package org.cubewhy.chat.service;
 
 import org.cubewhy.chat.entity.Account;
+import org.cubewhy.chat.entity.Channel;
 import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.Role;
 
@@ -22,4 +23,6 @@ public interface AccountService {
     Account save(Account account);
 
     boolean checkPermission(Account account, Permission... permission);
+
+    List<Channel> findManagedChannels(Account account);
 }

@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.dto.ChannelDTO;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,9 +55,15 @@ public interface ChannelService {
 
     boolean rejectFriendRequest(Long requestId);
 
+    List<ChannelJoinRequest> findJoinRequestByChannel(Channel channel);
+
     boolean checkPermissions(Account account, Channel channel, Permission... permissions);
 
     boolean rejectFriendRequest(FriendRequest request);
 
     ChannelJoinRequest findJoinRequestById(long id);
+
+    List<ChannelJoinRequest> findAllJoinRequests();
+
+    List<ChannelJoinRequest> findJoinRequestsByAccount(Account account);
 }

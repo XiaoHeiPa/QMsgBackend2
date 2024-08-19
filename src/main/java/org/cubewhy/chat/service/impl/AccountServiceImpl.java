@@ -2,9 +2,7 @@ package org.cubewhy.chat.service.impl;
 
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
-import org.cubewhy.chat.entity.Account;
-import org.cubewhy.chat.entity.Permission;
-import org.cubewhy.chat.entity.Role;
+import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.repository.AccountRepository;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.ChannelService;
@@ -92,5 +90,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean checkPermission(Account account, Permission... permission) {
         return account.getPermissions().containsAll(Arrays.asList(permission));
+    }
+
+    @Override
+    public List<Channel> findManagedChannels(Account account) {
+        return account.getChannelUsers().stream()
+                .filter(cu ->
+                        cu.getPermissions().contains(Permission.MANAGE_CHANNEL))
+                .map(ChannelUser::getChannel).toList();
     }
 }
