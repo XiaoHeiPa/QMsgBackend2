@@ -14,4 +14,7 @@ public class ChannelDTO {
     private String title;
     private String description;
     private String iconHash;
+
+    private boolean publicChannel;
+    private boolean decentralized;
 }

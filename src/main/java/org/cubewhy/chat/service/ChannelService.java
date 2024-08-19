@@ -31,4 +31,6 @@ public interface ChannelService {
     boolean hasViewPermission(Account account, long channelId);
 
     List<ChannelUser> findChannelUsers(Account account);
+
+    boolean disbandChannel(Long channelId);
 }

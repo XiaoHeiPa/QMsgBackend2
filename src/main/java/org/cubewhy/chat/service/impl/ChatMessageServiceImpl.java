@@ -37,4 +37,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         Pageable pageable = PageRequest.of(page, size);
         return chatMessageRepository.findBySenderAndChannel(sender, channel, pageable);
     }
+
+    @Override
+    public void deleteAllByChannel(Long channelId) {
+        chatMessageRepository.deleteAllByChannel(channelId);
+    }
 }

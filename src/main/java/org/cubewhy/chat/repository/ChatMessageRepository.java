@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
     Page<ChatMessage> findBySenderAndChannel(long sender, long channel, Pageable pageable);
     Page<ChatMessage> findByChannel(long channel, Pageable pageable);
+
+    void deleteAllByChannel(Long channelId);
 }

@@ -12,6 +12,7 @@ import org.cubewhy.chat.repository.AccountRepository;
 import org.cubewhy.chat.repository.ChannelRepository;
 import org.cubewhy.chat.repository.ChannelUserRepository;
 import org.cubewhy.chat.service.ChannelService;
+import org.cubewhy.chat.service.ChatMessageService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,6 +33,9 @@ public class ChannelServiceImpl implements ChannelService {
     @Resource
     private ChannelUserRepository channelUserRepository;
 
+    @Resource
+    ChatMessageService chatMessageService;
+
     @Override
     public Channel createChannel(ChannelDTO channelDTO) {
         Optional<Channel> existChannel = channelRepository.findByName(channelDTO.getName());
@@ -41,6 +45,8 @@ public class ChannelServiceImpl implements ChannelService {
         channel.setTitle(channelDTO.getTitle());
         channel.setDescription(channelDTO.getDescription());
         channel.setIconHash(channelDTO.getIconHash());
+        channel.setPublicChannel(channelDTO.isPublicChannel());
+        channel.setDecentralized(channelDTO.isDecentralized());
         return channelRepository.save(channel);
     }
 
@@ -103,6 +109,12 @@ public class ChannelServiceImpl implements ChannelService {
         ChannelUser channelUser = channelUserRepository.findByChannelIdAndUserId(channelId, userId);
         if (channelUser != null) {
             channelUserRepository.delete(channelUser);
+            Channel channel = channelUser.getChannel();
+            if (channelUserRepository.findByChannelId(channelId).isEmpty() && channel.isDecentralized()) {
+                // 全部人都退出了,自动解散
+                // 非去中心化群组在重新加入后可用
+                this.disbandChannel(channelId);
+            }
         }
     }
 
@@ -123,5 +135,14 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public List<ChannelUser> findChannelUsers(Account account) {
         return channelUserRepository.findByUserId(account.getId());
+    }
+
+    @Override
+    public boolean disbandChannel(Long channelId) {
+        if (!channelUserRepository.existsById(channelId)) return false;
+        chatMessageService.deleteAllByChannel(channelId); // 清理数据库
+        channelUserRepository.deleteByChannelId(channelId); // 清理成员
+        channelRepository.deleteById(channelId); // 删除群组
+        return true;
     }
 }
