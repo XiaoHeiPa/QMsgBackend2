@@ -74,4 +74,6 @@ public interface ChannelService {
     ChannelJoinRequest createJoinRequest(ChannelJoinRequestDTO joinRequest, Account account);
 
     FriendRequest createFriendRequest(FriendRequestDTO friendRequest, Account account);
+
+    FriendRequest findFriendRequestById(long requestId);
 }

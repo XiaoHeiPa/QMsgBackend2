@@ -292,4 +292,9 @@ public class ChannelServiceImpl implements ChannelService {
     public boolean checkPermissions(Account account, Channel channel, Permission... permissions) {
         return channelUserRepository.findByChannelIdAndUserId(channel.getId(), account.getId()).getPermissions().containsAll(Arrays.asList(permissions));
     }
+
+    @Override
+    public FriendRequest findFriendRequestById(long requestId) {
+        return friendRequestRepository.findById(requestId).orElse(null);
+    }
 }

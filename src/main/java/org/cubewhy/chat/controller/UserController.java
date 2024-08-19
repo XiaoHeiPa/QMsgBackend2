@@ -73,9 +73,6 @@ public class UserController {
         Account accountResult = accountService.createAccount(account);
         return ResponseEntity.ok(RestBean.success(accountResult.asViewObject(AccountVO.class, (vo) -> {
             vo.setRoles(roles.stream().map(Role::getName).toList());
-
-            vo.setRegisterTime(accountResult.getRegisterTime().toInstant(ZoneOffset.UTC).toEpochMilli());
-            vo.setUpdatedTime(accountResult.getUpdatedTime().toInstant(ZoneOffset.UTC).toEpochMilli());
         })));
     }
 }

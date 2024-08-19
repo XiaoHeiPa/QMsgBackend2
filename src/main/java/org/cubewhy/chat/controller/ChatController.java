@@ -48,8 +48,6 @@ public class ChatController {
         Account account = (Account) request.getUserPrincipal();
         if (!channelService.hasViewPermission(account, channel)) return null;
         return Flux.fromIterable(chatMessageService.getMessagesByChannel(channel, page, size)
-                .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class, (vo) -> {
-                    vo.setTimestamp(chatMessage.getTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli());
-                })));
+                .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class)));
     }
 }

@@ -28,7 +28,6 @@ public class FileController {
         UserUpload upload = userUploadService.upload(file, account);
         UserUploadVO uu = upload.asViewObject(UserUploadVO.class, (vo) -> {
             vo.setUploadUser(account.getId());
-            vo.setTimestamp(upload.getTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli());
         });
         return ResponseEntity.ok(RestBean.success(uu));
     }
@@ -39,7 +38,6 @@ public class FileController {
         if (userUpload == null)
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(RestBean.failure(404, "Not Found"));
         return ResponseEntity.ok(RestBean.success(userUpload.asViewObject(UserUploadVO.class, (vo) -> {
-            vo.setTimestamp(userUpload.getTimestamp().toInstant(ZoneOffset.UTC).toEpochMilli());
             vo.setUploadUser(userUpload.getUploadUser().getId());
         })));
     }
@@ -60,10 +58,7 @@ public class FileController {
     @GetMapping("download/{hash}/key")
     public ResponseEntity<RestBean<DownloadKeyVO>> generateDownloadKey(@PathVariable String hash) {
         DownloadKey key = userUploadService.generateKey(hash);
-        DownloadKeyVO keyVO = key.asViewObject(DownloadKeyVO.class, (vo) -> {
-            vo.setCreateAt(key.getCreateAt().toInstant(ZoneOffset.UTC).toEpochMilli());
-            vo.setExpireAt(key.getExpireAt().toInstant(ZoneOffset.UTC).toEpochMilli());
-        });
+        DownloadKeyVO keyVO = key.asViewObject(DownloadKeyVO.class);
         return ResponseEntity.ok(RestBean.success(keyVO));
     }
 }

@@ -11,6 +11,8 @@ import org.cubewhy.chat.entity.vo.ChannelVO;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.ChannelService;
 import org.cubewhy.chat.util.RedisConstants;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +42,7 @@ public class ChannelController {
         // 将所有权限给创建者
         // 这不会导致滥用,服务器权限会自动忽略
         channelService.addUserToChannel(channel, account, Permission.values());
-        return ResponseEntity.ok(RestBean.success(channel.asViewObject(ChannelVO.class, (vo) -> {
-            vo.setCreatedAt(channel.getCreateAt().toInstant(ZoneOffset.UTC).toEpochMilli());
-        })));
+        return ResponseEntity.ok(RestBean.success(channel.asViewObject(ChannelVO.class)));
     }
 
     @PostMapping("request/{id}/approve")
@@ -133,7 +133,7 @@ public class ChannelController {
         return ResponseEntity.ok(RestBean.success());
     }
 
-    private ChannelJoinRequest joinRequestOrNull(HttpServletRequest request, long requestId) {
+    private @Nullable ChannelJoinRequest joinRequestOrNull(@NotNull HttpServletRequest request, long requestId) {
         Account account = (Account) request.getUserPrincipal();
         ChannelJoinRequest joinRequest = channelService.findJoinRequestById(requestId);
         Channel channel = channelService.findChannelById(joinRequest.getChannelId());
