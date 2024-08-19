@@ -26,6 +26,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  data:
+    redis:
+      repositories:
+        enabled: false
   cache:
     type: redis
     redis:
