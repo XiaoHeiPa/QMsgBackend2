@@ -93,10 +93,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public List<Channel> findManagedChannels(Account account) {
         return account.getChannelUsers().stream()
                 .filter(cu ->
                         cu.getPermissions().contains(Permission.MANAGE_CHANNEL))
                 .map(ChannelUser::getChannel).toList();
+    }
+
+    @Override
+    @Transactional
+    public List<Channel> findJoinedChannels(Account account) {
+        return channelService.findChannelUsers(account).stream().map(ChannelUser::getChannel).toList();
     }
 }

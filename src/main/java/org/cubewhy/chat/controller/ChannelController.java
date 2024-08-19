@@ -57,7 +57,7 @@ public class ChannelController {
         return ResponseEntity.status(400).body(RestBean.badRequest("RequestId not found"));
     }
 
-    @PostMapping("request/list")
+    @GetMapping("request/list")
     public ResponseEntity<RestBean<List<ChannelJoinRequestVO>>> listPaddingJoinRequests(HttpServletRequest request) {
         Account account = (Account) request.getUserPrincipal();
         List<ChannelJoinRequestVO> requests;
@@ -72,6 +72,13 @@ public class ChannelController {
             ).toList();
         }
         return ResponseEntity.ok(RestBean.success(requests));
+    }
+
+    @GetMapping("list")
+    public ResponseEntity<RestBean<List<ChannelVO>>> listChannels(HttpServletRequest request) {
+        Account account = (Account) request.getUserPrincipal();
+        List<ChannelVO> list = accountService.findJoinedChannels(account).stream().map(channel -> channel.asViewObject(ChannelVO.class)).toList();
+        return ResponseEntity.ok(RestBean.success(list));
     }
 
     private ChannelJoinRequest joinRequestOrNull(HttpServletRequest request, long requestId) {

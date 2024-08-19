@@ -104,16 +104,18 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Transactional
     @Override
-    public void addUserToChannel(Long channelId, Long userId, Permission... permissions) {
+    public ChannelUser addUserToChannel(Long channelId, Long userId, Permission... permissions) {
         Channel channel = channelRepository.findById(channelId).orElseThrow(() -> new EntityNotFoundException("Channel not found"));
         Account user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        addUserToChannel(channel, user, permissions);
+        return addUserToChannel(channel, user, permissions);
     }
 
     @Transactional
     @Override
-    public void addUserToChannel(Channel channel, Account user, Permission... permissions) {
+    public ChannelUser addUserToChannel(Channel channel, Account user, Permission... permissions) {
+        ChannelUser exist = channelUserRepository.findByChannelIdAndUserId(channel.getId(), user.getId());
+        if (exist != null) return exist;
         ChannelUser channelUser = new ChannelUser();
         channelUser.setChannel(channel);
         channelUser.setUser(user);
@@ -123,7 +125,7 @@ public class ChannelServiceImpl implements ChannelService {
         } else {
             channelUser.setPermissions(Arrays.stream(permissions).collect(Collectors.toSet()));
         }
-        channelUserRepository.save(channelUser);
+        return channelUserRepository.save(channelUser);
     }
 
     @Override

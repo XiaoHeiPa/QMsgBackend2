@@ -25,4 +25,6 @@ public interface AccountService {
     boolean checkPermission(Account account, Permission... permission);
 
     List<Channel> findManagedChannels(Account account);
+
+    List<Channel> findJoinedChannels(Account account);
 }

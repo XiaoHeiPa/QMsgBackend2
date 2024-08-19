@@ -28,19 +28,22 @@ class QMsgBackendApplicationTests {
     @Resource
     ChatMessageService chatMessageService;
 
-    @Test
     @Transactional
+    @Test
     void contextLoads() {
-//        Role role = roleService.createRole("USER1", "Default", Permission.CREATE_CHANNEL, Permission.SEND_MESSAGE, Permission.JOIN_CHANNEL);
-//        Account account = accountService.createAccount("test1", "test", role);
-//        Channel channel = channelService.createChannel(ChannelDTO.builder()
-//                .title("Test")
-//                .name("test")
-//                .description("test")
-//                .build());
-//        System.out.println(channel.getName() + " " + channel.getId());
-//        channelService.addUserToChannel(channel.getId(), account.getId(), Permission.CREATE_CHANNEL);
-//        System.out.println(channelService.findChannelUsers(account).get(0).getJoinedAt());
+        Role role = roleService.createRole("USER1", "Default", Permission.CREATE_CHANNEL, Permission.SEND_MESSAGE, Permission.JOIN_CHANNEL);
+        Account account = accountService.createAccount("test1", "test", role);
+        Channel channel = channelService.createChannel(ChannelDTO.builder()
+                .title("Test Channel")
+                .name("test_channel")
+                .description("test")
+                .build());
+        System.out.println(account.getName());
+        System.out.println(channel.getName() + " " + channel.getId());
+        channelService.addUserToChannel(channel.getId(), account.getId(), Permission.SEND_MESSAGE);
+        for (Channel c : accountService.findJoinedChannels(account)) {
+            System.out.println("Channel: " + c.getName() + " " + c.getId());
+        }
     }
 
     @Test

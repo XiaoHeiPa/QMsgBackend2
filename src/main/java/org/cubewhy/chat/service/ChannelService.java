@@ -26,10 +26,10 @@ public interface ChannelService {
     List<Channel> getAllChannels();
 
     @Transactional
-    void addUserToChannel(Long channelId, Long userId, Permission... permissions);
+    ChannelUser addUserToChannel(Long channelId, Long userId, Permission... permissions);
 
     @Transactional
-    void addUserToChannel(Channel channel, Account user, Permission... permissions);
+    ChannelUser addUserToChannel(Channel channel, Account user, Permission... permissions);
 
     void removeUserFromChannel(Long channelId, Long userId);
 
