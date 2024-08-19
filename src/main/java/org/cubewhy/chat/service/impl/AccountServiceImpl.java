@@ -2,28 +2,40 @@ package org.cubewhy.chat.service.impl;
 
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
 import org.cubewhy.chat.entity.*;
+import org.cubewhy.chat.entity.dto.InviteCodeDTO;
 import org.cubewhy.chat.repository.AccountRepository;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.ChannelService;
 import org.cubewhy.chat.service.RoleService;
+import org.cubewhy.chat.util.RedisConstants;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
+@Log4j2
 public class AccountServiceImpl implements AccountService {
     @Resource
     AccountRepository accountRepository;
+
     @Resource
     @Lazy
     PasswordEncoder passwordEncoder;
+
     @Resource
     RoleService roleService;
+
     @Resource
     ChannelService channelService;
+
+    @Resource
+    RedisTemplate<String, InviteCode> inviteCodeRedisTemplate;
 
     @Override
     @Transactional
@@ -46,30 +58,17 @@ public class AccountServiceImpl implements AccountService {
         return account;
     }
 
-    @Transactional
-    @Override
-    public Account createAccount(String username, String rawPassword, Role... roles1) {
-        // Check if the username already exists
-        Optional<Account> existAccount = accountRepository.findByUsername(username);
-        if (existAccount.isPresent()) return existAccount.get();
-
-        // Create a new account
-        Account account = new Account();
-        account.setUsername(username);
-        account.setPassword(passwordEncoder.encode(rawPassword));
-
-        // Fetch roles from the database
-        Set<Role> roles = new HashSet<>();
-        account.setRoles(roles);
-
-        // Save the account to the database
-        return accountRepository.save(account);
-    }
-
     @Override
     public Account createAccount(Account account) {
-        Optional<Account> existAccount = accountRepository.findById(account.getId());
-        return existAccount.orElseGet(() -> accountRepository.save(account));
+        Optional<Account> existAccount;
+        if (account.getId() != null) {
+            existAccount = accountRepository.findById(account.getId());
+        } else {
+            existAccount = accountRepository.findByUsername(account.getUsername());
+        }
+        if (existAccount.isPresent()) return existAccount.get();
+        log.info("Account {} was created", account.getUsername());
+        return accountRepository.save(account);
     }
 
     @Override
@@ -79,6 +78,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void deleteAccountById(long id) {
+        log.info("Account with id {} was deleted", id);
         accountRepository.deleteById(id);
     }
 
@@ -105,5 +105,40 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public List<Channel> findJoinedChannels(Account account) {
         return channelService.findChannelUsers(account).stream().map(ChannelUser::getChannel).toList();
+    }
+
+    @Override
+    public Set<Role> useInviteCode(String code) {
+        InviteCode codeObj = inviteCodeRedisTemplate.opsForValue().getAndDelete(RedisConstants.INVITATION + code);
+        if (codeObj == null) return Set.of();
+        return codeObj.getRoles().stream().map(role -> roleService.findByName(role)).collect(Collectors.toSet());
+    }
+
+    @Override
+    public InviteCode createInviteCode(String code, Role... roles) {
+        InviteCode codeObj = new InviteCode();
+        codeObj.setCode(code);
+        codeObj.setRoles(Arrays.stream(roles).map(Role::getName).collect(Collectors.toSet()));
+        saveInviteCode(codeObj);
+        return codeObj;
+    }
+
+    @Override
+    public InviteCode createInviteCode(InviteCodeDTO dto) {
+        InviteCode codeObj = new InviteCode();
+        codeObj.setCode(dto.getCode());
+        codeObj.setRoles(dto.getRoles());
+        saveInviteCode(codeObj);
+        return codeObj;
+    }
+
+    @Override
+    public boolean existByUsername(String username) {
+        return accountRepository.existsByUsername(username);
+    }
+
+    private void saveInviteCode(InviteCode codeObj) {
+        inviteCodeRedisTemplate.opsForValue().set(RedisConstants.INVITATION + codeObj.getCode(), codeObj);
+        log.info("Invite code {} was created", codeObj.getCode());
     }
 }

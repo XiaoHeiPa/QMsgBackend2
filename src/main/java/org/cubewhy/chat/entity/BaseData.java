@@ -33,7 +33,7 @@ public interface BaseData {
             field.setAccessible(true); // make accessible
             source.setAccessible(true);
             field.set(vo, source.get(this));
-        } catch (IllegalAccessException | NoSuchFieldException ignored) {
+        } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException ignored) {
 
         }
     }

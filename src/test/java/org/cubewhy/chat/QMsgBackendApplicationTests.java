@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Collections;
+
 @SpringBootTest
 class QMsgBackendApplicationTests {
     @Resource
@@ -32,7 +34,11 @@ class QMsgBackendApplicationTests {
     @Test
     void contextLoads() {
         Role role = roleService.createRole("USER1", "Default", Permission.CREATE_CHANNEL, Permission.SEND_MESSAGE, Permission.JOIN_CHANNEL);
-        Account account = accountService.createAccount("test1", "test", role);
+        Account acc = new Account();
+        acc.setNickname("Test");
+        acc.setUsername("test");
+        acc.setRoles(Collections.singleton(role));
+        Account account = accountService.createAccount(acc);
         Channel channel = channelService.createChannel(ChannelDTO.builder()
                 .title("Test Channel")
                 .name("test_channel")

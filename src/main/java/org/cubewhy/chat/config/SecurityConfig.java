@@ -73,9 +73,11 @@ public class SecurityConfig {
                                 .requestMatchers("/admin/user/**").hasAuthority(Permission.MANAGE_USER.name())
                                 .requestMatchers("/admin/channel/**").hasAuthority(Permission.MANAGE_CHANNEL.name())
                                 .requestMatchers("/admin/role/**").hasAuthority(Permission.MANAGE_ROLES.name())
+                                .requestMatchers("/admin/user/invite").hasAuthority(Permission.REGISTER_INVITE.name())
                                 .requestMatchers("/file/upload").hasAuthority(Permission.UPLOAD_FILES.name())
                                 .requestMatchers("/file/download/*").permitAll()
                                 .requestMatchers("/file/download/*/key").hasAuthority(Permission.DOWNLOAD_FILES.name())
+                                .requestMatchers("/api/user/register").anonymous()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(

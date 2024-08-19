@@ -1,16 +1,13 @@
 package org.cubewhy.chat.controller.admin;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.log4j.Log4j2;
-import org.cubewhy.chat.entity.Account;
-import org.cubewhy.chat.entity.RestBean;
-import org.cubewhy.chat.entity.Role;
-import org.cubewhy.chat.entity.dto.AccountDTO;
-import org.cubewhy.chat.entity.dto.DeleteAccountDTO;
-import org.cubewhy.chat.entity.dto.UpdatePasswordDTO;
-import org.cubewhy.chat.entity.dto.UpdateRoleDTO;
+import org.cubewhy.chat.entity.*;
+import org.cubewhy.chat.entity.dto.*;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.RoleService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Log4j2
 @RestController
@@ -26,10 +24,26 @@ import java.util.Set;
 public class UserAdminController {
     @Resource
     AccountService accountService;
+
     @Resource
     RoleService roleService;
+
     @Resource
     PasswordEncoder passwordEncoder;
+
+    @Value("${spring.application.register.state}")
+    boolean allowRegister;
+
+    @PostConstruct
+    public void init() {
+        if (accountService.findAllAccounts().isEmpty()) {
+            log.warn("It seems that you are running the QMessenger server for the first time, here is your registration code");
+            Role owner = roleService.createRole("OWNER", "Owner", Permission.values());
+            InviteCode code = accountService.createInviteCode(UUID.randomUUID().toString(), owner);
+            log.warn("Code: {}", code.getCode());
+            log.warn("Please use it in any QMessenger clients.");
+        }
+    }
 
     @GetMapping("list")
     public List<Account> list() {
@@ -41,7 +55,7 @@ public class UserAdminController {
         try {
             Account account = new Account();
             account.setUsername(accountDTO.getUsername());
-            account.setPassword(accountDTO.getPassword());
+            account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
             account.setBio(accountDTO.getBio());
             account.setEmail(accountDTO.getEmail());
             for (long role : accountDTO.getRoles()) {
@@ -90,5 +104,12 @@ public class UserAdminController {
         account.setPassword(passwordEncoder.encode(updatePasswordDTO.getPassword()));
         accountService.save(account);
         return ResponseEntity.ok(RestBean.success("Account updated successfully"));
+    }
+
+    @PostMapping("invite")
+    public ResponseEntity<RestBean<InviteCode>> invite(@RequestBody InviteCodeDTO dto) {
+        if (!allowRegister) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RestBean.badRequest("Invite code is not allowed in this server"));
+        InviteCode inviteCode = accountService.createInviteCode(dto);
+        return ResponseEntity.ok(RestBean.success(inviteCode));
     }
 }

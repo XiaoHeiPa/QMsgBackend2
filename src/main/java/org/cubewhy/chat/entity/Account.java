@@ -18,6 +18,7 @@ public class Account implements BaseData, Principal {
 
     private String username;
     private String password;
+    private String email;
 
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
@@ -31,8 +32,8 @@ public class Account implements BaseData, Principal {
     private Set<Role> roles = new HashSet<>();
 
     private String nickname;
-    private String email;
     private String bio;
+    private String avatarHash;
 
     private LocalDateTime registerTime;
     private LocalDateTime updatedTime;

@@ -37,7 +37,7 @@ public class RoleServiceImpl implements RoleService {
         Role role = new Role();
         role.setName(name);
         role.setDescription(description);
-        role.setPermissions(Arrays.stream(permissions).collect(Collectors.toSet()));
+        role.setPermissions(Arrays.stream(permissions).filter(permission -> (permission.getType().equals(Permission.Type.SERVLET) || permission.getType().equals(Permission.Type.CHANNEL_AND_SERVLET))).collect(Collectors.toSet()));
         return roleRepository.save(role);
     }
 
