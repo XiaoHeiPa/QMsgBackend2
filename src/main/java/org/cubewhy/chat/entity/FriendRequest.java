@@ -15,7 +15,9 @@ public class FriendRequest {
     // 其实在QMessenger中没有好友这个概念
     // 通过申请之后自动创建频道而已
 
+    @Column(name = "`from`")
     private long from;
+    @Column(name = "`to`")
     private long to;
     private String reason;
 
