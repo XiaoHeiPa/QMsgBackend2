@@ -9,6 +9,7 @@ import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.RestBean;
 import org.cubewhy.chat.entity.UserDetailsImpl;
 import org.cubewhy.chat.entity.vo.AuthorizeVO;
+import org.cubewhy.chat.entity.vo.RoleVO;
 import org.cubewhy.chat.filter.JwtAuthorizeFilter;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.UserDetailsServiceImpl;
@@ -30,6 +31,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
@@ -145,6 +147,8 @@ public class SecurityConfig {
         Account account = user.getAccount();
         String token = jwtUtil.createJwt(user, account.getId(), account.getUsername());
         AuthorizeVO authorizeVO = account.asViewObject(AuthorizeVO.class, authorizeVO1 -> {
+            authorizeVO1.setRoles(account.getRoles().stream().map(role -> role.asViewObject(RoleVO.class)).collect(Collectors.toSet()));
+
             authorizeVO1.setExpire(jwtUtil.getExpireDate().getTime());
             authorizeVO1.setToken(token);
         });

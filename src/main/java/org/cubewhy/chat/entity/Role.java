@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Data
 @Entity
-public class Role {
+public class Role implements BaseData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

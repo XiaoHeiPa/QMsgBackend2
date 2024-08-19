@@ -7,9 +7,9 @@ import java.util.Set;
 
 @Data
 public class AuthorizeVO {
-    String username;
-    String token;
-    String email;
-    Set<Role> roles;
-    long expire;
+    private String username;
+    private String token;
+    private String email;
+    private Set<RoleVO> roles;
+    private long expire;
 }
