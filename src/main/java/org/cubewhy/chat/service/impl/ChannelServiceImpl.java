@@ -5,6 +5,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.dto.ChannelDTO;
+import org.cubewhy.chat.entity.dto.ChannelJoinRequestDTO;
+import org.cubewhy.chat.entity.dto.FriendRequestDTO;
 import org.cubewhy.chat.repository.*;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.ChannelService;
@@ -159,11 +161,21 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
+    @Transactional
     public boolean disbandChannel(Long channelId) {
         if (!channelUserRepository.existsById(channelId)) return false;
-        chatMessageService.deleteAllByChannel(channelId); // 清理数据库
+        chatMessageService.deleteAllByChannelId(channelId); // 清理数据库
         channelUserRepository.deleteByChannelId(channelId); // 清理成员
         channelRepository.deleteById(channelId); // 删除群组
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean disbandChannel(Channel channel) {
+        chatMessageService.deleteAllByChannelId(channel.getId());
+        channelUserRepository.deleteByChannelId(channel.getId());
+        channelRepository.delete(channel); // 删除群组
         return true;
     }
 
@@ -249,6 +261,24 @@ public class ChannelServiceImpl implements ChannelService {
             result.addAll(findJoinRequestByChannel(channel));
         }
         return result;
+    }
+
+    @Override
+    public ChannelJoinRequest createJoinRequest(ChannelJoinRequestDTO joinRequest, Account account) {
+        ChannelJoinRequest request = new ChannelJoinRequest();
+        request.setChannelId(joinRequest.getChannelId());
+        request.setUserId(account.getId());
+        request.setReason(joinRequest.getReason());
+        return channelJoinRequestRepository.save(request);
+    }
+
+    @Override
+    public FriendRequest createFriendRequest(FriendRequestDTO friendRequest, Account account) {
+        FriendRequest request = new FriendRequest();
+        request.setFrom(account.getId());
+        request.setTo(friendRequest.getTo());
+        request.setReason(friendRequest.getReason());
+        return friendRequestRepository.save(request);
     }
 
     @Override

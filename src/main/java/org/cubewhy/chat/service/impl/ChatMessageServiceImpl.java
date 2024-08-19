@@ -39,7 +39,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    public void deleteAllByChannel(Long channelId) {
+    public void deleteAllByChannelId(Long channelId) {
         chatMessageRepository.deleteAllByChannel(channelId);
     }
 }

@@ -2,6 +2,7 @@ package org.cubewhy.chat;
 
 import com.alibaba.fastjson2.JSON;
 import jakarta.annotation.Resource;
+import jakarta.transaction.Transactional;
 import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.dto.ChannelDTO;
 import org.cubewhy.chat.entity.dto.ChatMessageDTO;
@@ -28,11 +29,8 @@ class QMsgBackendApplicationTests {
     ChatMessageService chatMessageService;
 
     @Test
+    @Transactional
     void contextLoads() {
-    }
-
-    @Test
-    void queryMessages() {
 //        Role role = roleService.createRole("USER1", "Default", Permission.CREATE_CHANNEL, Permission.SEND_MESSAGE, Permission.JOIN_CHANNEL);
 //        Account account = accountService.createAccount("test1", "test", role);
 //        Channel channel = channelService.createChannel(ChannelDTO.builder()
@@ -40,16 +38,9 @@ class QMsgBackendApplicationTests {
 //                .name("test")
 //                .description("test")
 //                .build());
-//        System.out.println(channel.getName() + " "+ channel.getId());
+//        System.out.println(channel.getName() + " " + channel.getId());
 //        channelService.addUserToChannel(channel.getId(), account.getId(), Permission.CREATE_CHANNEL);
-//        for (int i = 0; i < 150; i++) {
-//            ChatMessageDTO message = new ChatMessageDTO();
-//            message.setContentType("hello-world");
-//            message.setContent(JSON.parseObject("{\"hello\":\"world " + i + "\"}"));
-//            chatMessageService.saveMessage(message, channel.getId(), account);
-//        }
-//        Page<ChatMessage> messages = chatMessageService.getMessagesByChannel(channel.getId(), 0, 10);
-//        messages.forEach(message -> System.out.println(message.getContent()));
+//        System.out.println(channelService.findChannelUsers(account).get(0).getJoinedAt());
     }
 
     @Test

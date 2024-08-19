@@ -11,5 +11,5 @@ public interface ChatMessageService {
 
     Page<ChatMessage> getMessagesBySenderAndChannel(long sender, long channel, int page, int size);
 
-    void deleteAllByChannel(Long channelId);
+    void deleteAllByChannelId(Long channelId);
 }

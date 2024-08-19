@@ -3,6 +3,8 @@ package org.cubewhy.chat.service;
 import jakarta.transaction.Transactional;
 import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.dto.ChannelDTO;
+import org.cubewhy.chat.entity.dto.ChannelJoinRequestDTO;
+import org.cubewhy.chat.entity.dto.FriendRequestDTO;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,6 +41,8 @@ public interface ChannelService {
 
     boolean disbandChannel(Long channelId);
 
+    boolean disbandChannel(Channel channel);
+
     boolean approveJoinRequest(Long requestId);
 
     @Transactional
@@ -66,4 +70,8 @@ public interface ChannelService {
     List<ChannelJoinRequest> findAllJoinRequests();
 
     List<ChannelJoinRequest> findJoinRequestsByAccount(Account account);
+
+    ChannelJoinRequest createJoinRequest(ChannelJoinRequestDTO joinRequest, Account account);
+
+    FriendRequest createFriendRequest(FriendRequestDTO friendRequest, Account account);
 }
