@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.ZoneOffset;
 
 @RestController
-@RequestMapping("/file")
+@RequestMapping("/api/file")
 public class FileController {
     @Resource
     UserUploadService userUploadService;

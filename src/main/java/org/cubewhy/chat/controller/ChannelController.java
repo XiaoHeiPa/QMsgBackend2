@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping("/channel")
+@RequestMapping("/api/channel")
 public class ChannelController {
     @Resource
     ChannelService channelService;

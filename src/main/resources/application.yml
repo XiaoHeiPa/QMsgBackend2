@@ -10,6 +10,9 @@ spring:
       dir: ~/.cubewhy/messenger/backend
       # 密钥失效时间 单位second
       keyExpire: 600
+    register:
+      # 是否允许直接注册
+      state: true
   kafka:
     bootstrap-servers: localhost:9092
   security:
