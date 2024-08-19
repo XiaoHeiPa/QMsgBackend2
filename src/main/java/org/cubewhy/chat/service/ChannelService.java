@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface ChannelService {
     Channel createChannel(ChannelDTO channelDTO);
 
+    Channel createChannel(Channel channel);
+
     Channel updateChannel(Long channelId, ChannelDTO channelDTO);
 
     void deleteChannel(Long channelId);
@@ -23,6 +25,9 @@ public interface ChannelService {
 
     @Transactional
     void addUserToChannel(Long channelId, Long userId, Permission... permissions);
+
+    @Transactional
+    void addUserToChannel(Channel channel, Account user, Permission... permissions);
 
     void removeUserFromChannel(Long channelId, Long userId);
 
@@ -37,4 +42,8 @@ public interface ChannelService {
     boolean approveJoinRequest(Long requestId);
 
     boolean rejectJoinRequest(Long requestId);
+
+    Channel approveFriendRequest(Long requestId);
+
+    boolean rejectFriendRequest(Long requestId);
 }
