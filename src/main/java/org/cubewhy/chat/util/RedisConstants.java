@@ -7,4 +7,5 @@ public interface RedisConstants {
     String CACHED_MESSAGE = "qbychat:cache:";
     String FCM_TOKEN = "qbychat:fcm:token:";
     String FILE_ACCESS_KEY = "qbychat:file:key:";
+    String CHANNEL_INVITATION = "qbychat:channel:invitation";
 }

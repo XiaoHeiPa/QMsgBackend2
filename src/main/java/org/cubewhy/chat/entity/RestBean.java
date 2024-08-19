@@ -43,8 +43,12 @@ public record RestBean<T>(int code, T data, String message) {
         return failure(code, exception.getMessage());
     }
 
-    public static RestBean<String> badRequest(String message) {
-        return new RestBean<>(400, null, message);
+    public static <T> RestBean<T> badRequest(String message) {
+        return failure(400, message);
+    }
+
+    public static <T> RestBean<T> badRequest() {
+        return badRequest("Bad request");
     }
 
     public String toJson() {

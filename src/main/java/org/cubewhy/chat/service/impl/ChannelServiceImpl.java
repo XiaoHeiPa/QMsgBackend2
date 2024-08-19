@@ -121,9 +121,9 @@ public class ChannelServiceImpl implements ChannelService {
         channelUser.setUser(user);
         channelUser.setJoinedAt(LocalDateTime.now());
         if (permissions.length == 0) {
-            channelUser.setPermissions(Collections.emptySet());
+            channelUser.setPermissions(new HashSet<>(Arrays.asList(Permission.SEND_MESSAGE, Permission.VIEW_CHANNEL, Permission.UPLOAD_FILES, Permission.DOWNLOAD_FILES)));
         } else {
-            channelUser.setPermissions(Arrays.stream(permissions).collect(Collectors.toSet()));
+            channelUser.setPermissions(Arrays.stream(permissions).filter(p -> (p.getType().equals(Permission.Type.CHANNEL) || p.getType().equals(Permission.Type.CHANNEL_AND_SERVLET))).collect(Collectors.toSet()));
         }
         return channelUserRepository.save(channelUser);
     }
