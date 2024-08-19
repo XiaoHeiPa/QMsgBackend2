@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.dto.ChannelDTO;
+import org.cubewhy.chat.entity.dto.ChannelJoinRequestDTO;
 import org.cubewhy.chat.entity.dto.GenerateChannelInviteCodeDTO;
 import org.cubewhy.chat.entity.vo.ChannelInviteCodeVO;
 import org.cubewhy.chat.entity.vo.ChannelJoinRequestVO;
@@ -18,8 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -131,6 +130,27 @@ public class ChannelController {
         Account account = accountService.findAccountById((int) request.getAttribute("id"));
         channelService.addUserToChannel(vo.getChannelId(), account.getId());
         return ResponseEntity.ok(RestBean.success());
+    }
+
+    @PostMapping("request")
+    public ResponseEntity<RestBean<ChannelJoinRequest>> requestJoin(HttpServletRequest request, @RequestBody ChannelJoinRequestDTO dto) {
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
+        return ResponseEntity.ok(RestBean.success(channelService.createJoinRequest(dto, account)));
+    }
+
+    @PostMapping("request/{requestId}/approve")
+    public ResponseEntity<RestBean<String>> approveRequest(HttpServletRequest request, @PathVariable int requestId) {
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
+        ChannelJoinRequest channelJoinRequest = channelService.findJoinRequestById(requestId);
+        Channel channel = channelService.findChannelById(channelJoinRequest.getChannelId());
+        if (channelService.checkPermissions(account, channel, Permission.MANAGE_CHANNEL)) {
+            if (channelService.approveJoinRequest(channelJoinRequest)) {
+                return ResponseEntity.ok(RestBean.success("Success"));
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(RestBean.failure(500, "Internal server error"));
+            }
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(RestBean.forbidden("Forbidden"));
     }
 
     private @Nullable ChannelJoinRequest joinRequestOrNull(@NotNull HttpServletRequest request, long requestId) {
