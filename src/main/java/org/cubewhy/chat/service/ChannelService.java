@@ -33,4 +33,8 @@ public interface ChannelService {
     List<ChannelUser> findChannelUsers(Account account);
 
     boolean disbandChannel(Long channelId);
+
+    boolean approveJoinRequest(Long requestId);
+
+    boolean rejectJoinRequest(Long requestId);
 }

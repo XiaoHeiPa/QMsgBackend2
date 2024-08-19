@@ -3,12 +3,10 @@ package org.cubewhy.chat.service.impl;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.cubewhy.chat.entity.Account;
-import org.cubewhy.chat.entity.Channel;
-import org.cubewhy.chat.entity.ChannelUser;
-import org.cubewhy.chat.entity.Permission;
+import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.dto.ChannelDTO;
 import org.cubewhy.chat.repository.AccountRepository;
+import org.cubewhy.chat.repository.ChannelJoinRequestRepository;
 import org.cubewhy.chat.repository.ChannelRepository;
 import org.cubewhy.chat.repository.ChannelUserRepository;
 import org.cubewhy.chat.service.ChannelService;
@@ -25,13 +23,16 @@ import java.util.stream.Collectors;
 @Service
 public class ChannelServiceImpl implements ChannelService {
     @Resource
-    private ChannelRepository channelRepository;
+    ChannelRepository channelRepository;
 
     @Resource
-    private AccountRepository userRepository;
+    AccountRepository userRepository;
 
     @Resource
-    private ChannelUserRepository channelUserRepository;
+    ChannelUserRepository channelUserRepository;
+
+    @Resource
+    ChannelJoinRequestRepository channelJoinRequestRepository;
 
     @Resource
     ChatMessageService chatMessageService;
@@ -143,6 +144,28 @@ public class ChannelServiceImpl implements ChannelService {
         chatMessageService.deleteAllByChannel(channelId); // 清理数据库
         channelUserRepository.deleteByChannelId(channelId); // 清理成员
         channelRepository.deleteById(channelId); // 删除群组
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean approveJoinRequest(Long requestId) {
+        Optional<ChannelJoinRequest> joinRequest = channelJoinRequestRepository.findById(requestId);
+        if (joinRequest.isEmpty()) return false;
+        ChannelJoinRequest request = joinRequest.get();
+        Long channelId = request.getChannelId();
+        Optional<Channel> channelOptional = this.getChannelById(channelId);
+        if (channelOptional.isEmpty()) return false;
+        this.addUserToChannel(channelId, request.getUserId(), Permission.SEND_MESSAGE, Permission.VIEW_CHANNEL);
+        channelJoinRequestRepository.deleteById(requestId);
+        return true;
+    }
+
+    @Override
+    public boolean rejectJoinRequest(Long requestId) {
+        Optional<ChannelJoinRequest> joinRequest = channelJoinRequestRepository.findById(requestId);
+        if (joinRequest.isEmpty()) return false;
+        channelJoinRequestRepository.deleteById(requestId);
         return true;
     }
 }
