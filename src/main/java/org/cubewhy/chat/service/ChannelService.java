@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChannelService {
+    boolean existByName(String name);
+
     Channel createChannel(ChannelDTO channelDTO);
 
     Channel createChannel(Channel channel);

@@ -44,6 +44,11 @@ public class ChannelServiceImpl implements ChannelService {
     AccountService accountService;
 
     @Override
+    public boolean existByName(String name) {
+        return channelRepository.existsByName(name);
+    }
+
+    @Override
     public Channel createChannel(ChannelDTO channelDTO) {
         Optional<Channel> existChannel = channelRepository.findByName(channelDTO.getName());
         if (existChannel.isPresent()) return existChannel.get();

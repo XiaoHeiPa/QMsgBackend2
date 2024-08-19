@@ -4,7 +4,6 @@ import com.alibaba.fastjson2.JSONObject;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
-import org.cubewhy.chat.conventer.CryptConverter;
 import org.cubewhy.chat.conventer.MessageContentConverter;
 
 import java.time.LocalDateTime;

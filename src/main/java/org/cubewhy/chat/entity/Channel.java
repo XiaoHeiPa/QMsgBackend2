@@ -28,10 +28,10 @@ public class Channel {
     @OneToMany(mappedBy = "channel")
     private List<ChannelUser> channelUsers;
 
-    private LocalDateTime createTime;
+    private LocalDateTime createAt;
 
     @PrePersist
     protected void onCreate() {
-        this.createTime = LocalDateTime.now();
+        this.createAt = LocalDateTime.now();
     }
 }

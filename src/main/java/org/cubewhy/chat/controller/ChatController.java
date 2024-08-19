@@ -4,7 +4,6 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 import org.cubewhy.chat.entity.Account;
-import org.cubewhy.chat.entity.Channel;
 import org.cubewhy.chat.entity.ChatMessage;
 import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.dto.ChatMessageDTO;
@@ -15,7 +14,6 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +23,6 @@ import reactor.core.publisher.Flux;
 
 import java.time.ZoneOffset;
 import java.util.Objects;
-import java.util.Optional;
 
 @Log4j2
 @RestController
