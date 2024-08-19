@@ -27,6 +27,8 @@ repositories {
 extra["snippetsDir"] = file("build/generated-snippets")
 
 dependencies {
+    implementation("commons-io:commons-io:2.16.1")
+    implementation("cn.hutool:hutool-crypto:5.8.31")
     implementation("com.auth0:java-jwt:4.4.0")
     implementation("commons-io:commons-io:2.16.1")
     implementation("com.google.firebase:firebase-admin:9.3.0")

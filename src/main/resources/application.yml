@@ -4,6 +4,9 @@ spring:
     # AES/ECB/PKCS5 Key 长度必须为16
     # 实际部署请修改此值
     crypt-key: powered-by-zzyss
+    # 上传文件的保存目录 使用~代替用户根目录
+    # 只要服务端有权限访问就可以 通常不需要手动干涉
+    upload: ~/.cubewhy/messenger/backend
   kafka:
     bootstrap-servers: localhost:9092
   security:
@@ -12,6 +15,7 @@ spring:
       key: zzyss-please-mod-this
       expire: 7
   datasource:
+    # 如果需要其他数据库需要在build.gradle.kts中添加对应的lib并重新编译
     url: jdbc:h2:file:./qmsgdb
     username: sa
     password:
