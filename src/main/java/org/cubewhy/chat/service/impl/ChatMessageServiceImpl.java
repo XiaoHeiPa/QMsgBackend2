@@ -6,10 +6,12 @@ import org.cubewhy.chat.entity.ChatMessage;
 import org.cubewhy.chat.entity.dto.ChatMessageDTO;
 import org.cubewhy.chat.repository.ChatMessageRepository;
 import org.cubewhy.chat.service.ChatMessageService;
+import org.cubewhy.chat.util.KafkaConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,13 +19,19 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Resource
     private ChatMessageRepository chatMessageRepository;
 
+    @Resource
+    KafkaTemplate<String, ChatMessage> kafkaTemplate;
+
     @Override
-    public ChatMessage saveMessage(ChatMessageDTO message, long channelId, Account sender) {
+    public ChatMessage saveMessage(ChatMessageDTO message, Account sender) {
         ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setChannel(channelId);
+        chatMessage.setChannel(message.getChannel());
         chatMessage.setSender(sender.getId());
+        chatMessage.setContentType(message.getContentType());
         chatMessage.setContent(message.getContent());
-        return chatMessageRepository.save(chatMessage);
+        ChatMessage saved = chatMessageRepository.save(chatMessage);
+        kafkaTemplate.send(KafkaConstants.KAFKA_TOPIC, saved); // push to kafka
+        return saved;
     }
 
     @Override
@@ -41,5 +49,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     public void deleteAllByChannelId(Long channelId) {
         chatMessageRepository.deleteAllByChannel(channelId);
+    }
+
+    @Override
+    public ChatMessage getMessageById(long messageId) {
+        return chatMessageRepository.findById(messageId).orElse(null);
     }
 }

@@ -9,8 +9,10 @@ import org.cubewhy.chat.entity.dto.GenerateChannelInviteCodeDTO;
 import org.cubewhy.chat.entity.vo.ChannelInviteCodeVO;
 import org.cubewhy.chat.entity.vo.ChannelJoinRequestVO;
 import org.cubewhy.chat.entity.vo.ChannelVO;
+import org.cubewhy.chat.entity.vo.ChatMessageVO;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.ChannelService;
+import org.cubewhy.chat.service.ChatMessageService;
 import org.cubewhy.chat.util.RedisConstants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +20,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +35,18 @@ public class ChannelController {
     AccountService accountService;
 
     @Resource
+    ChatMessageService chatMessageService;
+
+    @Resource
     RedisTemplate<String, ChannelInviteCodeVO> channelInviteCodeRedisTemplate;
+
+    @GetMapping("messages")
+    public Flux<ChatMessageVO> getChannelMessages(HttpServletRequest request, @RequestParam int channel, @RequestParam int page, @RequestParam int size) {
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
+        if (!channelService.hasViewPermission(account, channel)) return null;
+        return Flux.fromIterable(chatMessageService.getMessagesByChannel(channel, page, size)
+                .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class)));
+    }
 
     @PostMapping("create")
     public ResponseEntity<RestBean<ChannelVO>> createChannel(HttpServletRequest request, @RequestBody ChannelDTO createChannelDTO) {
