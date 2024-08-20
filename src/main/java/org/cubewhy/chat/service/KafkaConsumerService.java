@@ -9,15 +9,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaConsumerService {
 
-    private final SimpMessagingTemplate messagingTemplate;
-
-    public KafkaConsumerService(SimpMessagingTemplate messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
-    }
-
     @KafkaListener(topics = KafkaConstants.KAFKA_TOPIC, groupId = KafkaConstants.GROUP_ID)
     public void listen(ChatMessage message) {
-        messagingTemplate.convertAndSend("/topic/channel", message);
+        // todo
     }
 }
 

@@ -38,16 +38,6 @@ public class ChatController {
     @Resource
     AccountService accountService;
 
-    @MessageMapping("/send/{channel}")
-    @SendTo("/topic/channel/{channel}")
-    public ChatMessageVO broadcastChannelMessage(@Payload ChatMessageDTO message, @DestinationVariable int channel, StompHeaderAccessor headerAccessor) {
-        Account account = (Account) Objects.requireNonNull(headerAccessor.getUser());
-        if (!account.getPermissions().contains(Permission.SEND_MESSAGE)) return null;
-        ChatMessage chatMessage = chatMessageService.saveMessage(message, channel, account);
-        return chatMessage.asViewObject(ChatMessageVO.class);
-    }
-
-
     @GetMapping("/channel/messages")
     public Flux<ChatMessageVO> getChannelMessages(HttpServletRequest request, @RequestParam int channel, @RequestParam int page, @RequestParam int size) {
         Account account = accountService.findAccountById((int) request.getAttribute("id"));
