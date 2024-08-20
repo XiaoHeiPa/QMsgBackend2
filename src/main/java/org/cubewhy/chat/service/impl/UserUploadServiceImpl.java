@@ -55,9 +55,8 @@ public class UserUploadServiceImpl implements UserUploadService {
     }
 
     @Override
-    public UserUpload upload(MultipartFile file, Account uploadUser, String description) throws IOException {
+    public UserUpload upload(byte[] bytes, String fileName, Account uploadUser, String description) throws IOException {
         // process upload
-        byte[] bytes = file.getBytes();
         String hash = SecureUtil.sha256(new ByteArrayInputStream(bytes));
         Optional<UserUpload> exist = userUploadRepository.findByHash(hash);
         if (exist.isPresent()) return exist.get();
@@ -68,9 +67,10 @@ public class UserUploadServiceImpl implements UserUploadService {
             FileUtils.writeByteArrayToFile(target, bytes);
         }
         UserUpload userUpload = new UserUpload();
-        userUpload.setName(file.getOriginalFilename());
+        userUpload.setName(fileName);
         userUpload.setUploadUser(uploadUser);
         userUpload.setDescription(description);
+        userUpload.setHash(hash);
         return userUploadRepository.save(userUpload);
     }
 

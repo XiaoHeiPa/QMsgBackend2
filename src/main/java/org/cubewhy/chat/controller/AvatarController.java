@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.RestBean;
 import org.cubewhy.chat.entity.UserUpload;
+import org.cubewhy.chat.entity.vo.UserUploadVO;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.UserUploadService;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +26,14 @@ public class AvatarController {
     AccountService accountService;
 
     @PutMapping("upload")
-    public ResponseEntity<RestBean<String>> upload(HttpServletRequest request, MultipartFile file) throws Exception {
+    public ResponseEntity<RestBean<UserUploadVO>> upload(HttpServletRequest request, @RequestBody byte[] bytes) throws Exception {
         Account account = accountService.findAccountByRequest(request);
-        UserUpload upload = userUploadService.upload(file, account, "Avatar");
+        UserUpload upload = userUploadService.upload(bytes, "avatar-" + System.currentTimeMillis() + ".png", account, "Avatar of user " + account.getId());
         account.setAvatarHash(upload.getHash());
-        return ResponseEntity.ok(RestBean.success("Success"));
+        accountService.update(account);
+        return ResponseEntity.ok(RestBean.success(upload.asViewObject(UserUploadVO.class, (vo) -> {
+            vo.setUploadUser(account.getId());
+        })));
     }
 
     @GetMapping("image/{username}")

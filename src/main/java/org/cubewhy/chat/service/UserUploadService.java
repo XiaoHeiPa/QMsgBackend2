@@ -8,11 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public interface UserUploadService {
-    UserUpload upload(MultipartFile file, Account uploadUser, String description) throws IOException;
-
-    default UserUpload upload(MultipartFile file, Account uploadUser) throws IOException {
-        return upload(file, uploadUser, null);
-    }
+    UserUpload upload(byte[] bytes, String fileName, Account uploadUser, String description) throws IOException;
 
     default byte[] read(UserUpload userUpload) throws IOException {
         return read(userUpload.getHash());

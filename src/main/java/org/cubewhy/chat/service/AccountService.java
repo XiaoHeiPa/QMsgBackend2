@@ -37,4 +37,6 @@ public interface AccountService {
     Account findAccountByName(String username);
 
     Account findAccountByRequest(HttpServletRequest request);
+
+    Account update(Account account);
 }

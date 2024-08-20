@@ -150,6 +150,11 @@ public class AccountServiceImpl implements AccountService {
         return findAccountById((int) request.getAttribute("id"));
     }
 
+    @Override
+    public Account update(Account account) {
+        return accountRepository.save(account);
+    }
+
     private void saveInviteCode(InviteCode codeObj) {
         inviteCodeRedisTemplate.opsForValue().set(RedisConstants.INVITATION + codeObj.getCode(), codeObj);
         log.info("Invite code {} was created", codeObj.getCode());
