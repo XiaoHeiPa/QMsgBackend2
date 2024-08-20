@@ -32,4 +32,6 @@ public interface AccountService {
     InviteCode createInviteCode(InviteCodeDTO dto);
 
     boolean existByUsername(String username);
+
+    Account findAccountByName(String username);
 }

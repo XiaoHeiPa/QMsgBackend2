@@ -137,6 +137,12 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.existsByUsername(username);
     }
 
+    @Override
+    public Account findAccountByName(String username) {
+        return accountRepository.findByUsername(username).orElse(null
+        );
+    }
+
     private void saveInviteCode(InviteCode codeObj) {
         inviteCodeRedisTemplate.opsForValue().set(RedisConstants.INVITATION + codeObj.getCode(), codeObj);
         log.info("Invite code {} was created", codeObj.getCode());
