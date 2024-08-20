@@ -35,10 +35,11 @@ public class FileController {
     }
 
     @GetMapping("check")
-    public ResponseEntity<RestBean<UserUploadVO>> check(HttpServletRequest request, CheckFileDTO checkFileDTO) throws Exception {
+    public ResponseEntity<RestBean<UserUploadVO>> check(HttpServletRequest request, @RequestBody CheckFileDTO checkFileDTO) throws Exception {
         UserUpload userUpload = userUploadService.findByHash(checkFileDTO.getHash());
-        if (userUpload == null)
+        if (userUpload == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(RestBean.failure(404, "Not Found"));
+        }
         return ResponseEntity.ok(RestBean.success(userUpload.asViewObject(UserUploadVO.class, (vo) -> {
             vo.setUploadUser(userUpload.getUploadUser().getId());
         })));
