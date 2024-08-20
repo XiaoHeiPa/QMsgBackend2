@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.Channel;
-import org.cubewhy.chat.entity.ChatMessage;
 import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.dto.RecallMessageDTO;
 import org.cubewhy.chat.service.AccountService;
@@ -31,7 +30,7 @@ public class ChatController {
 
     @DeleteMapping("delete")
     public void deleteMessages(HttpServletRequest request, @RequestBody RecallMessageDTO dto) {
-        Account account = accountService.findAccountById((int) request.getAttribute("id"));
+        Account account = accountService.findAccountByRequest(request);
         dto.getMessageId().stream().map(id -> chatMessageService.findMessageById(id)).forEach(message -> {
             Channel channel = channelService.findChannelById(message.getChannel());
             if (message.getSender() == account.getId() || channelService.checkPermissions(account, channel, Permission.MANAGE_CHANNEL)) {

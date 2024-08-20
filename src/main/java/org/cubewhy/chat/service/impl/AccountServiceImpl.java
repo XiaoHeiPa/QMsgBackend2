@@ -1,6 +1,7 @@
 package org.cubewhy.chat.service.impl;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.cubewhy.chat.entity.*;
@@ -141,6 +142,12 @@ public class AccountServiceImpl implements AccountService {
     public Account findAccountByName(String username) {
         return accountRepository.findByUsername(username).orElse(null
         );
+    }
+
+    @Override
+    @Transactional
+    public Account findAccountByRequest(HttpServletRequest request) {
+        return findAccountById((int) request.getAttribute("id"));
     }
 
     private void saveInviteCode(InviteCode codeObj) {

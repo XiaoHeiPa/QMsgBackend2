@@ -1,5 +1,6 @@
 package org.cubewhy.chat.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.dto.InviteCodeDTO;
 
@@ -34,4 +35,6 @@ public interface AccountService {
     boolean existByUsername(String username);
 
     Account findAccountByName(String username);
+
+    Account findAccountByRequest(HttpServletRequest request);
 }
