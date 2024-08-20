@@ -24,7 +24,7 @@ public class FileController {
     @Resource
     AccountService accountService;
 
-    @PostMapping("upload")
+    @PutMapping("upload")
     public ResponseEntity<RestBean<UserUploadVO>> upload(HttpServletRequest request, @RequestParam String fileName, @RequestBody byte[] bytes) throws Exception {
         Account account = accountService.findAccountById((int) request.getAttribute("id"));
         UserUpload upload = userUploadService.upload(bytes, fileName, account, "User uploaded content");
