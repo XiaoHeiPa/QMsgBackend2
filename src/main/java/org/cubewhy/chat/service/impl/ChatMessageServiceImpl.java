@@ -52,7 +52,12 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    public ChatMessage getMessageById(long messageId) {
+    public ChatMessage findMessageById(long messageId) {
         return chatMessageRepository.findById(messageId).orElse(null);
+    }
+
+    @Override
+    public void deleteMessage(ChatMessage message) {
+        chatMessageRepository.delete(message);
     }
 }

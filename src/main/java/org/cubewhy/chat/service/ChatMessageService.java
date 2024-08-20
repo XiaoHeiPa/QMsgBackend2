@@ -13,5 +13,7 @@ public interface ChatMessageService {
 
     void deleteAllByChannelId(Long channelId);
 
-    ChatMessage getMessageById(long messageId);
+    ChatMessage findMessageById(long messageId);
+
+    void deleteMessage(ChatMessage message);
 }
