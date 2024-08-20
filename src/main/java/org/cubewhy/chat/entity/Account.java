@@ -51,8 +51,8 @@ public class Account implements BaseData, Principal {
 
     @OneToMany(mappedBy = "user")
     private List<ChannelUser> channelUsers = List.of();
-    @OneToMany(mappedBy = "uploadUser")
-    private List<UserUpload> uploadFiles = List.of();
+//    @OneToMany(mappedBy = "uploadUser")
+//    private List<UserUpload> uploadFiles = List.of();
 
     @Override
     public String getName() {
