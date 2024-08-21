@@ -6,9 +6,11 @@ import jakarta.annotation.Resource;
 import lombok.extern.log4j.Log4j2;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.ChatMessage;
+import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.WebSocketRequest;
 import org.cubewhy.chat.entity.dto.ChatMessageDTO;
 import org.cubewhy.chat.service.AccountService;
+import org.cubewhy.chat.service.ChannelService;
 import org.cubewhy.chat.service.ChatMessageService;
 import org.cubewhy.chat.service.SessionService;
 import org.cubewhy.chat.util.JwtUtil;
@@ -33,6 +35,9 @@ public class ChatHandler extends TextWebSocketHandler {
     ChatMessageService chatMessageService;
 
     @Resource
+    ChannelService channelService;
+
+    @Resource
     JwtUtil jwtUtil;
 
     @Override
@@ -49,7 +54,9 @@ public class ChatHandler extends TextWebSocketHandler {
         Account user = sessionService.getUser(session);
         if (request.getMethod().equals(WebSocketRequest.SEND_MESSAGE)) {
             ChatMessageDTO data = JSON.parseObject(request.getData().toJSONString(), ChatMessageDTO.class);
-            chatMessageService.saveMessage(data, user);
+            if (channelService.checkPermissions(user, channelService.findChannelById(data.getChannel()), Permission.SEND_MESSAGE)) {
+                chatMessageService.saveMessage(data, user);
+            }
         }
     }
 

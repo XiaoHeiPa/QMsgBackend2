@@ -292,7 +292,9 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public boolean checkPermissions(Account account, Channel channel, Permission... permissions) {
-        return channelUserRepository.findByChannelIdAndUserId(channel.getId(), account.getId()).getPermissions().containsAll(Arrays.asList(permissions));
+        ChannelUser cu = channelUserRepository.findByChannelIdAndUserId(channel.getId(), account.getId());
+        if (cu == null) return false; // not in channel
+        return cu.getPermissions().containsAll(Arrays.asList(permissions));
     }
 
     @Override
