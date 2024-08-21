@@ -61,6 +61,6 @@ public class AvatarController {
             StreamUtils.copy(Objects.requireNonNull(getClass().getResourceAsStream("/default-avatar.png")), response.getOutputStream());
             return;
         }
-        StreamUtils.copy(userUploadService.read(user.getAvatarHash()), response.getOutputStream());
+        StreamUtils.copy(userUploadService.read(avatarHash), response.getOutputStream());
     }
 }
