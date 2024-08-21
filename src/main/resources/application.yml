@@ -13,6 +13,13 @@ spring:
     register:
       # 是否允许直接注册
       state: true
+    push:
+      fcm:
+        # 是否启用Firebase推送
+        state: false
+        # 配置文件地址
+        # 不要分享你的配置文件
+        config: ~/.cubewhy/messenger/fcm.json
   kafka:
     bootstrap-servers: localhost:9092
   security:
