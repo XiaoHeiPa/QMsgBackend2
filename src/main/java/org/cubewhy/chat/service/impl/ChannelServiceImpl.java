@@ -311,4 +311,9 @@ public class ChannelServiceImpl implements ChannelService {
     public Channel findChannelByName(String name) {
         return channelRepository.findByName(name).orElse(null);
     }
+
+    @Override
+    public Channel update(Channel channel) {
+        return channelRepository.save(channel);
+    }
 }

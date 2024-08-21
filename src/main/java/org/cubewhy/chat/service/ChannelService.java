@@ -80,4 +80,6 @@ public interface ChannelService {
     boolean hasName(String name);
 
     Channel findChannelByName(String name);
+
+    Channel update(Channel channel);
 }

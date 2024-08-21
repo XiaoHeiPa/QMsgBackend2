@@ -29,6 +29,18 @@ public class AvatarController {
     @Resource
     ChannelService channelService;
 
+    @PutMapping("upload/channel/{id}")
+    public ResponseEntity<RestBean<UserUploadVO>> uploadForChannel(HttpServletRequest request, @RequestBody byte[] bytes, @PathVariable long id) throws Exception{
+        Account account = accountService.findAccountByRequest(request);
+        Channel channel = channelService.findChannelById(id);
+        UserUpload upload = userUploadService.upload(bytes, "avatar-" + System.currentTimeMillis() + ".png", account, "Avatar of channel " + account.getId());
+        channel.setIconHash(upload.getHash());
+        channelService.update(channel);
+        return ResponseEntity.ok(RestBean.success(upload.asViewObject(UserUploadVO.class, (vo) -> {
+            vo.setUploadUser(account.getId());
+        })));
+    }
+
     @PutMapping("upload")
     public ResponseEntity<RestBean<UserUploadVO>> upload(HttpServletRequest request, @RequestBody byte[] bytes) throws Exception {
         Account account = accountService.findAccountByRequest(request);
