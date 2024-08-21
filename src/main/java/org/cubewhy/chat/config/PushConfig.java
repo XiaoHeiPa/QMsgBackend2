@@ -18,20 +18,15 @@ public class PushConfig {
 
     @Bean
     FirebaseApp firebaseApp(GoogleCredentials credentials) {
-        FirebaseOptions options = FirebaseOptions.builder()
+        FirebaseOptions firebaseOptions = FirebaseOptions
+                .builder()
                 .setCredentials(credentials)
                 .build();
-
-        return FirebaseApp.initializeApp(options);
+        return FirebaseApp.initializeApp(firebaseOptions);
     }
 
     @Bean
-    FirebaseMessaging firebaseMessaging(GoogleCredentials googleCredentials) throws IOException {
-        FirebaseOptions firebaseOptions = FirebaseOptions
-                .builder()
-                .setCredentials(googleCredentials)
-                .build();
-        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions);
+    FirebaseMessaging firebaseMessaging(FirebaseApp app) {
         return FirebaseMessaging.getInstance(app);
     }
 
