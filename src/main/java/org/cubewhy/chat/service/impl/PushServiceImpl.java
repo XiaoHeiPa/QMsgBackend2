@@ -70,6 +70,7 @@ public class PushServiceImpl implements PushService {
 
     @Override
     public void updateFirebaseToken(Account account, String token) {
+        log.info("New FCM token for account {}: {}", account.getName(), token);
         redisTemplate.opsForValue().set(RedisConstants.FCM_TOKEN + account.getId(), token);
     }
 }
