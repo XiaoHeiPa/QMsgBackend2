@@ -11,8 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatMessageVO {
+    private long id;
+
     private long channel;
     private long sender;
+    private String shortContent;
     private String contentType;
     private JSONObject content;
     private long timestamp;

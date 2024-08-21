@@ -76,4 +76,6 @@ public interface ChannelService {
     FriendRequest createFriendRequest(FriendRequestDTO friendRequest, Account account);
 
     FriendRequest findFriendRequestById(long requestId);
+
+    boolean hasName(String name);
 }

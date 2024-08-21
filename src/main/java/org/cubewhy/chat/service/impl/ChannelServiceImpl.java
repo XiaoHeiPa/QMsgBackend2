@@ -51,6 +51,7 @@ public class ChannelServiceImpl implements ChannelService {
     public Channel createChannel(ChannelDTO channelDTO) {
         Optional<Channel> existChannel = channelRepository.findByName(channelDTO.getName());
         if (existChannel.isPresent()) return existChannel.get();
+        if (accountService.existByUsername(channelDTO.getName())) return null;
         Channel channel = new Channel();
         if (channelDTO.getName() != null) {
             channel.setName(channelDTO.getName());
@@ -67,6 +68,7 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public Channel createChannel(Channel channel) {
+        if (accountService.existByUsername(channel.getName())) return null;
         Optional<Channel> existChannel = channelRepository.findByName(channel.getName());
         return existChannel.orElseGet(() -> channelRepository.save(channel));
     }
@@ -296,5 +298,10 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public FriendRequest findFriendRequestById(long requestId) {
         return friendRequestRepository.findById(requestId).orElse(null);
+    }
+
+    @Override
+    public boolean hasName(String name) {
+        return channelRepository.existsByName(name);
     }
 }

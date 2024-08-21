@@ -12,7 +12,6 @@ import org.cubewhy.chat.service.UserUploadService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 
@@ -36,9 +35,9 @@ public class AvatarController {
         })));
     }
 
-    @GetMapping("image/{username}")
-    public void getAvatar(HttpServletResponse response, @PathVariable String username) throws Exception {
-        Account user = accountService.findAccountByName(username);
+    @GetMapping("account/{name}")
+    public void getAvatar(HttpServletResponse response, @PathVariable String name) throws Exception {
+        Account user = accountService.findAccountByName(name);
         if (user == null) {
             response.setContentType("application/json");
             response.getWriter().write(RestBean.failure(404, "Not found").toJson());

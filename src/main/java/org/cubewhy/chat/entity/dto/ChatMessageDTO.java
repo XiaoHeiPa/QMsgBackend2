@@ -7,6 +7,7 @@ import lombok.Data;
 public class ChatMessageDTO {
     private long channel;
 
+    private String shortContent;
     private String contentType;
     private JSONObject content;
 }

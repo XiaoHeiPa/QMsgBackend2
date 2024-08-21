@@ -71,6 +71,9 @@ public class UserController {
         account.setBio(dto.getBio());
         account.setRoles(roles);
         Account accountResult = accountService.createAccount(account);
+        if (accountResult == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(RestBean.failure(409, "Name was taken"));
+        }
         return ResponseEntity.ok(RestBean.success(accountResult.asViewObject(AccountVO.class, (vo) -> {
             vo.setRoles(roles.stream().map(Role::getName).toList());
         })));

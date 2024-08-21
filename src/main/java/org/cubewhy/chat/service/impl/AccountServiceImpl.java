@@ -68,6 +68,9 @@ public class AccountServiceImpl implements AccountService {
             existAccount = accountRepository.findByUsername(account.getUsername());
         }
         if (existAccount.isPresent()) return existAccount.get();
+        if (channelService.hasName(account.getName())) {
+            return null;
+        }
         log.info("Account {} was created", account.getUsername());
         return accountRepository.save(account);
     }

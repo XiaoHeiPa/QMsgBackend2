@@ -51,6 +51,9 @@ public class ChannelController {
     @PostMapping("create")
     public ResponseEntity<RestBean<ChannelVO>> createChannel(HttpServletRequest request, @RequestBody ChannelDTO createChannelDTO) {
         Channel channel = channelService.createChannel(createChannelDTO);
+        if (channel == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(RestBean.failure(409, "Conflict"));
+        }
         Account account = accountService.findAccountById((int) request.getAttribute("id"));
         // 将所有权限给创建者
         // 这不会导致滥用,服务器权限会自动忽略
