@@ -78,4 +78,6 @@ public interface ChannelService {
     FriendRequest findFriendRequestById(long requestId);
 
     boolean hasName(String name);
+
+    Channel findChannelByName(String name);
 }

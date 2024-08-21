@@ -306,4 +306,9 @@ public class ChannelServiceImpl implements ChannelService {
     public boolean hasName(String name) {
         return channelRepository.existsByName(name);
     }
+
+    @Override
+    public Channel findChannelByName(String name) {
+        return channelRepository.findByName(name).orElse(null);
+    }
 }
