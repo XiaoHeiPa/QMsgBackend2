@@ -16,9 +16,11 @@ spring:
     push:
       fcm:
         # 是否启用Firebase推送
+        # 禁用后只使用Websocket
         state: false
         # 配置文件地址
         # 不要分享你的配置文件
+        # 注意: 即使禁用了Firebase推送,你也需要一个配置文件
         config: ~/.cubewhy/messenger/fcm.json
   kafka:
     bootstrap-servers: localhost:9092
