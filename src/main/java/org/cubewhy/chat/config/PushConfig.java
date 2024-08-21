@@ -17,11 +17,6 @@ public class PushConfig {
     String fcmConfigPath;
 
     @Bean
-    FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
-        return FirebaseMessaging.getInstance(firebaseApp);
-    }
-
-    @Bean
     FirebaseApp firebaseApp(GoogleCredentials credentials) {
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(credentials)
