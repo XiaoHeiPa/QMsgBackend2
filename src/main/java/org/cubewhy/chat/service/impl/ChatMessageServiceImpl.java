@@ -1,6 +1,7 @@
 package org.cubewhy.chat.service.impl;
 
 import jakarta.annotation.Resource;
+import lombok.extern.log4j.Log4j2;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.ChatMessage;
 import org.cubewhy.chat.entity.dto.ChatMessageDTO;
@@ -15,6 +16,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@Log4j2
 public class ChatMessageServiceImpl implements ChatMessageService {
     @Resource
     private ChatMessageRepository chatMessageRepository;
@@ -29,8 +31,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chatMessage.setSender(sender.getId());
         chatMessage.setContentType(message.getContentType());
         chatMessage.setContent(message.getContent());
+        chatMessage.setShortContent(message.getShortContent());
         ChatMessage saved = chatMessageRepository.save(chatMessage);
         kafkaTemplate.send(KafkaConstants.KAFKA_TOPIC, saved); // push to kafka
+        log.debug("Message from {}: {}", sender.getNickname(), chatMessage.getShortContent());
         return saved;
     }
 

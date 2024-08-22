@@ -5,6 +5,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import jakarta.annotation.Resource;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.vo.ChannelVO;
@@ -40,6 +41,7 @@ public class PushServiceImpl implements PushService {
     private boolean fcmState;
 
     @Override
+    @Transactional
     public void push(ChatMessage message) throws FirebaseMessagingException, IOException {
         Channel channel = channelService.findChannelById(message.getChannel());
         for (ChannelUser user : channel.getChannelUsers()) {
