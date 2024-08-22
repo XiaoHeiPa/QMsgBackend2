@@ -56,7 +56,7 @@ public class AvatarController {
         })));
     }
 
-    @GetMapping("avatar/{name}/name")
+    @GetMapping("image/{name}")
     public void getAvatar(HttpServletResponse response, @PathVariable String name) throws Exception {
         Account user = accountService.findAccountByName(name);
         String avatarHash;
