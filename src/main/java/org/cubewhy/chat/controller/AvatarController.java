@@ -31,6 +31,9 @@ public class AvatarController {
     public ResponseEntity<RestBean<UserUploadVO>> uploadForChannel(HttpServletRequest request, @RequestBody byte[] bytes, @PathVariable long id) throws Exception{
         Account account = accountService.findAccountByRequest(request);
         Channel channel = channelService.findChannelById(id);
+        if (channel == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RestBean.badRequest());
+        }
         if (!channelService.checkPermissions(account, channel, Permission.MANAGE_CHANNEL)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(RestBean.forbidden("Forbidden"));
         }
