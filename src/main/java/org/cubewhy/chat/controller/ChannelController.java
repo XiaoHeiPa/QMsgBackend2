@@ -105,11 +105,9 @@ public class ChannelController {
     }
 
     @GetMapping("list")
-    public ResponseEntity<RestBean<List<ChanneltVO>>> listChannels(HttpServletRequest request) {
+    public ResponseEntity<RestBean<List<ChannelVO>>> listChannels(HttpServletRequest request) {
         Account account = accountService.findAccountById((int) request.getAttribute("id"));
-        List<ChannelVO> list = accountService.findJoinedChannels(account).stream().map(channel -> channel.asViewObject(ChannelVO.class, (vo) -> {
-            vo.setMemberCount(channel.getChannelUsers().size());
-        })).toList();
+        List<ChannelVO> list = accountService.findJoinedChannels(account).stream().map(channel -> channel.asViewObject(ChannelVO.class, (vo) -> vo.setMemberCount(channel.getChannelUsers().size()))).toList();
         return ResponseEntity.ok(RestBean.success(list));
     }
 
@@ -133,7 +131,7 @@ public class ChannelController {
     }
 
     @GetMapping("invite/{code}/query")
-    public ResponseEntity<RestBean<ChannelInviteCodeVO>> queryChannelInviteCode(HttpServletRequest request, @PathVariable String code) {
+    public ResponseEntity<RestBean<ChannelInviteCodeVO>> queryChannelInviteCode(@PathVariable String code) {
         ChannelInviteCodeVO vo = channelInviteCodeRedisTemplate.opsForValue().get(RedisConstants.CHANNEL_INVITATION + code);
         if (vo == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(RestBean.failure(404, "Not found"));
         return ResponseEntity.ok(RestBean.success(vo));
