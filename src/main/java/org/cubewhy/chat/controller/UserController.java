@@ -1,6 +1,7 @@
 package org.cubewhy.chat.controller;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.Permission;
 import org.cubewhy.chat.entity.RestBean;
@@ -13,10 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneOffset;
 import java.util.HashSet;
@@ -36,6 +34,14 @@ public class UserController {
 
     @Resource
     RoleService roleService;
+
+    @GetMapping("whoami")
+    public ResponseEntity<RestBean<AccountVO>> whoAmI(HttpServletRequest request) {
+        Account account = accountService.findAccountByRequest(request);
+        return ResponseEntity.ok(RestBean.success(account.asViewObject(AccountVO.class, (vo) -> {
+            vo.setRoles(account.getRoles().stream().map(Role::getName).toList());
+        })));
+    }
 
     @PostMapping("register")
     public ResponseEntity<RestBean<AccountVO>> register(@RequestBody RegisterDTO dto) {
