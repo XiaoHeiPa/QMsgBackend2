@@ -89,6 +89,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers("/api/file/download/*").permitAll()
                                 .requestMatchers("/api/user/register").anonymous()
                                 .requestMatchers("/api/avatar/image/**").permitAll()
+                                .requestMatchers("/api/status/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(
