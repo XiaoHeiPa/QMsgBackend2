@@ -3,14 +3,12 @@ package org.cubewhy.chat.controller;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.cubewhy.chat.entity.Account;
-import org.cubewhy.chat.entity.Channel;
-import org.cubewhy.chat.entity.RestBean;
-import org.cubewhy.chat.entity.UserUpload;
+import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.vo.UserUploadVO;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.ChannelService;
 import org.cubewhy.chat.service.UserUploadService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +31,9 @@ public class AvatarController {
     public ResponseEntity<RestBean<UserUploadVO>> uploadForChannel(HttpServletRequest request, @RequestBody byte[] bytes, @PathVariable long id) throws Exception{
         Account account = accountService.findAccountByRequest(request);
         Channel channel = channelService.findChannelById(id);
+        if (!channelService.checkPermissions(account, channel, Permission.MANAGE_CHANNEL)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(RestBean.forbidden("Forbidden"));
+        }
         UserUpload upload = userUploadService.upload(bytes, "avatar-" + System.currentTimeMillis() + ".png", account, "Avatar of channel " + account.getId());
         channel.setIconHash(upload.getHash());
         channelService.update(channel);

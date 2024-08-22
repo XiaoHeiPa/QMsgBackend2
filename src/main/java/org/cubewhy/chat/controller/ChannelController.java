@@ -105,7 +105,7 @@ public class ChannelController {
     }
 
     @GetMapping("list")
-    public ResponseEntity<RestBean<List<ChannelVO>>> listChannels(HttpServletRequest request) {
+    public ResponseEntity<RestBean<List<ChanneltVO>>> listChannels(HttpServletRequest request) {
         Account account = accountService.findAccountById((int) request.getAttribute("id"));
         List<ChannelVO> list = accountService.findJoinedChannels(account).stream().map(channel -> channel.asViewObject(ChannelVO.class, (vo) -> {
             vo.setMemberCount(channel.getChannelUsers().size());
