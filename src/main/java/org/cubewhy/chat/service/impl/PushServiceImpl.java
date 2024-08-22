@@ -7,6 +7,8 @@ import com.google.firebase.messaging.Notification;
 import jakarta.annotation.Resource;
 import lombok.extern.log4j.Log4j2;
 import org.cubewhy.chat.entity.*;
+import org.cubewhy.chat.entity.vo.ChannelVO;
+import org.cubewhy.chat.entity.vo.ChatMessageVO;
 import org.cubewhy.chat.service.ChannelService;
 import org.cubewhy.chat.service.PushService;
 import org.cubewhy.chat.service.SessionService;
@@ -58,7 +60,9 @@ public class PushServiceImpl implements PushService {
             // push via websockets
             WebSocketSession session = sessionService.getSession(account.getId());
             if (session != null) {
-                session.sendMessage(new TextMessage(new WebSocketResponse<>(WebSocketResponse.NEW_MESSAGE, message).toJson()));
+                session.sendMessage(new TextMessage(new WebSocketResponse<>(WebSocketResponse.NEW_MESSAGE, message.asViewObject(ChatMessageVO.class, (vo) -> {
+                    vo.setChannel(channelService.findChannelById(message.getChannel()).asViewObject(ChannelVO.class));
+                })).toJson()));
             }
         }
     }

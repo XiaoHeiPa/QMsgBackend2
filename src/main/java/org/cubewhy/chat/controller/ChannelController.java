@@ -45,7 +45,9 @@ public class ChannelController {
         Account account = accountService.findAccountById((int) request.getAttribute("id"));
         if (!channelService.hasViewPermission(account, channel)) return null;
         return Flux.fromIterable(chatMessageService.getMessagesByChannel(channel, page, size)
-                .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class)));
+                .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class, (vo) -> {
+                    vo.setChannel(channelService.findChannelById(chatMessage.getChannel()).asViewObject(ChannelVO.class));
+                })));
     }
 
     @PostMapping("create")

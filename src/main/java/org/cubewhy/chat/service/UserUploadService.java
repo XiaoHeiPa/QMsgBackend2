@@ -3,7 +3,6 @@ package org.cubewhy.chat.service;
 import org.cubewhy.chat.entity.Account;
 import org.cubewhy.chat.entity.DownloadKey;
 import org.cubewhy.chat.entity.UserUpload;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 

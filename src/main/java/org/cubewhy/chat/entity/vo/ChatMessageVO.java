@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class ChatMessageVO {
     private long id;
 
-    private long channel;
+    private ChannelVO channel;
     private long sender;
     private String shortContent;
     private String contentType;
