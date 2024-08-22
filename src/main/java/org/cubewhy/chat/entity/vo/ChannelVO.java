@@ -15,4 +15,5 @@ public class ChannelVO {
     private boolean decentralized;
 
     private long createdAt;
+    private long memberCount;
 }
