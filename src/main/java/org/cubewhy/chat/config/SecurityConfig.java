@@ -10,6 +10,7 @@ import org.cubewhy.chat.entity.RestBean;
 import org.cubewhy.chat.entity.UserDetailsImpl;
 import org.cubewhy.chat.entity.vo.AuthorizeVO;
 import org.cubewhy.chat.entity.vo.RoleVO;
+import org.cubewhy.chat.filter.CorsFilter;
 import org.cubewhy.chat.filter.JwtAuthorizeFilter;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.UserDetailsServiceImpl;
@@ -28,6 +29,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,11 +38,13 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
     @Resource
     JwtUtil jwtUtil;
+
     @Resource
     AccountService accountService;
+
     @Resource
     JwtAuthorizeFilter jwtAuthorizeFilter;
 
@@ -107,6 +112,15 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(jwtAuthorizeFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*") // Replace with your frontend URL
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 
     private void onAccessDeny(HttpServletRequest request, HttpServletResponse response, AccessDeniedException exception) throws IOException {
