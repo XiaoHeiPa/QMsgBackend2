@@ -37,7 +37,7 @@ public class AvatarController {
         if (!channelService.checkPermissions(account, channel, Permission.MANAGE_CHANNEL)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(RestBean.forbidden("Forbidden"));
         }
-        UserUpload upload = userUploadService.upload(bytes, "avatar-" + System.currentTimeMillis() + ".png", account, "Avatar of channel " + account.getId());
+        UserUpload upload = userUploadService.upload(bytes, "avatar-" + System.currentTimeMillis() + ".png", account, "Avatar of channel " + channel.getId());
         channel.setIconHash(upload.getHash());
         channelService.update(channel);
         return ResponseEntity.ok(RestBean.success(upload.asViewObject(UserUploadVO.class, (vo) -> {
