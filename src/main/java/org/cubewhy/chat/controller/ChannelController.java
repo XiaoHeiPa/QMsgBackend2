@@ -41,13 +41,13 @@ public class ChannelController {
     RedisTemplate<String, ChannelInviteCodeVO> channelInviteCodeRedisTemplate;
 
     @GetMapping("messages")
-    public Flux<ChatMessageVO> getChannelMessages(HttpServletRequest request, @RequestParam int channel, @RequestParam int page, @RequestParam int size) {
+    public List<ChatMessageVO> getChannelMessages(HttpServletRequest request, @RequestParam int channel, @RequestParam int page, @RequestParam int size) {
         Account account = accountService.findAccountById((int) request.getAttribute("id"));
         if (!channelService.hasViewPermission(account, channel)) return null;
-        return Flux.fromIterable(chatMessageService.getMessagesByChannel(channel, page, size)
+        return chatMessageService.getMessagesByChannel(channel, page, size)
                 .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class, (vo) -> {
                     vo.setChannel(channelService.findChannelById(chatMessage.getChannel()).asViewObject(ChannelVO.class));
-                })));
+                })).toList();
     }
 
     @PostMapping("create")
