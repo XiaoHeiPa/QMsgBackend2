@@ -37,14 +37,14 @@ public class ChannelController {
     RedisTemplate<String, ChannelInviteCodeVO> channelInviteCodeRedisTemplate;
 
     @GetMapping("messages")
-    public List<ChatMessageVO> getChannelMessages(HttpServletRequest request, @RequestParam int channel, @RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<RestBean<List<ChatMessageVO>>> getChannelMessages(HttpServletRequest request, @RequestParam int channel, @RequestParam int page, @RequestParam int size) {
         Account account = accountService.findAccountById((int) request.getAttribute("id"));
-        if (!channelService.hasViewPermission(account, channel)) return null;
-        return chatMessageService.getMessagesByChannel(channel, page, size)
+        if (!channelService.hasViewPermission(account, channel)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body(RestBean.forbidden("Forbidden"));
+        return ResponseEntity.ok(RestBean.success(chatMessageService.getMessagesByChannel(channel, page, size)
                 .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class, (vo) -> {
                     vo.setChannel(channelService.findChannelById(chatMessage.getChannel()).asViewObject(ChannelVO.class));
                     vo.setSender(accountService.findAccountById(chatMessage.getSender()).asViewObject(SenderVO.class));
-                })).toList();
+                })).toList()));
     }
 
     @PostMapping("create")
