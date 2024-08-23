@@ -118,6 +118,13 @@ public class ChannelController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(RestBean.failure(409, "Conflict"));
         }
         Account account = accountService.findAccountById((int) request.getAttribute("id"));
+        Channel channel = channelService.findChannelById(dto.getChannelId());
+        if (channel == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RestBean.badRequest("Channel not found"));
+        }
+        if (!channelService.checkPermissions(account, channel, Permission.SEND_CHANNEL_INVITE)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(RestBean.forbidden("Forbidden"));
+        }
         ChannelInviteCodeVO vo = new ChannelInviteCodeVO();
         vo.setCode(dto.getCode());
         vo.setCreateUser(account.getId());
