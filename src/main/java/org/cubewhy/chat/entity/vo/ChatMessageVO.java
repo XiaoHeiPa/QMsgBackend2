@@ -14,7 +14,7 @@ public class ChatMessageVO {
     private long id;
 
     private ChannelVO channel;
-    private long sender;
+    private SenderVO sender;
     private String shortContent;
     private String contentType;
     private JSONObject content;

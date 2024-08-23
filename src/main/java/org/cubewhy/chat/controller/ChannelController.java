@@ -6,10 +6,7 @@ import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.dto.ChannelDTO;
 import org.cubewhy.chat.entity.dto.ChannelJoinRequestDTO;
 import org.cubewhy.chat.entity.dto.GenerateChannelInviteCodeDTO;
-import org.cubewhy.chat.entity.vo.ChannelInviteCodeVO;
-import org.cubewhy.chat.entity.vo.ChannelJoinRequestVO;
-import org.cubewhy.chat.entity.vo.ChannelVO;
-import org.cubewhy.chat.entity.vo.ChatMessageVO;
+import org.cubewhy.chat.entity.vo.*;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.ChannelService;
 import org.cubewhy.chat.service.ChatMessageService;
@@ -46,6 +43,7 @@ public class ChannelController {
         return chatMessageService.getMessagesByChannel(channel, page, size)
                 .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class, (vo) -> {
                     vo.setChannel(channelService.findChannelById(chatMessage.getChannel()).asViewObject(ChannelVO.class));
+                    vo.setSender(accountService.findAccountById(chatMessage.getSender()).asViewObject(SenderVO.class));
                 })).toList();
     }
 
