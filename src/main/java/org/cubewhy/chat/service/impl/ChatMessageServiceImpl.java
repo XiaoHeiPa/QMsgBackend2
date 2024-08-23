@@ -10,6 +10,7 @@ import org.cubewhy.chat.repository.ChatMessageRepository;
 import org.cubewhy.chat.service.ChatMessageService;
 import org.cubewhy.chat.service.PushService;
 import org.cubewhy.chat.util.KafkaConstants;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private ChatMessageRepository chatMessageRepository;
 
     @Resource
+    @Lazy
     PushService pushService;
 
     @Override
