@@ -39,4 +39,6 @@ public interface AccountService {
     Account findAccountByRequest(HttpServletRequest request);
 
     Account update(Account account);
+
+    Account findAccountByIdNoExtra(long sender);
 }

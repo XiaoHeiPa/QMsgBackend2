@@ -7,4 +7,12 @@
       <option name="Make" enabled="true" />
     </method>
   </configuration>
+  <configuration default="false" name="Spring Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="QMsgBackend.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="org.cubewhy.chat.QMsgBackendApplication" />
+    <option name="VM_PARAMETERS" value="-Ddebug -Dserver.port=50001" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
 </component>
