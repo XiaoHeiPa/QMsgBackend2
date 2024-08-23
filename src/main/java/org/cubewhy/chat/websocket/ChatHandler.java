@@ -54,7 +54,7 @@ public class ChatHandler extends TextWebSocketHandler {
         Account user = sessionService.getUser(session);
         if (request.getMethod().equals(WebSocketRequest.SEND_MESSAGE)) {
             ChatMessageDTO data = JSON.parseObject(request.getData().toJSONString(), ChatMessageDTO.class);
-            if (channelService.checkPermissions(user, channelService.findChannelById(data.getChannel()), Permission.SEND_MESSAGE)) {
+            if (user != null && channelService.checkPermissions(user, channelService.findChannelById(data.getChannel()), Permission.SEND_MESSAGE)) {
                 chatMessageService.saveMessage(data, user);
             }
         }
