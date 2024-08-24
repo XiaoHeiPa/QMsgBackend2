@@ -154,7 +154,8 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public boolean hasViewPermission(Account account, long channelId) {
         if (account.getPermissions().contains(Permission.MANAGE_CHANNEL)) return true; // admin
-        if (!account.getPermissions().contains(Permission.VIEW_CHANNEL)) return false;
+        Channel channel = findChannelById(channelId);
+        if (!checkPermissions(account, channel, Permission.VIEW_CHANNEL)) return false;
         ChannelUser channelUser = channelUserRepository.findByChannelIdAndUserId(channelId, account.getId());
         return channelUser != null;
     }
