@@ -38,7 +38,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chatMessage.setShortContent(calcShortContent(message.getShortContent()));
         ChatMessage saved = chatMessageRepository.save(chatMessage);
         pushService.push(saved);
-        log.info("Message from {}: {}", sender.getNickname(), chatMessage.getShortContent());
+//        log.info("Message from {}: {}", sender.getNickname(), chatMessage.getShortContent());
         return saved;
     }
 
