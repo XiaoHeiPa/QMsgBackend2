@@ -43,8 +43,17 @@ public class ChannelController {
         return ResponseEntity.ok(RestBean.success(chatMessageService.getMessagesByChannel(channel, page, size)
                 .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class, (vo) -> {
                     vo.setChannel(channelService.findChannelById(chatMessage.getChannel()).asViewObject(ChannelVO.class));
-                    vo.setSender(accountService.findAccountByIdNoExtra(chatMessage.getSender()).asViewObject(SenderVO.class));
+                    vo.setSender(getSender(accountService.findAccountById(chatMessage.getSender()), channel));
                 })).toList()));
+    }
+
+    private SenderVO getSender(Account senderAccount, long channel) {
+        ChannelUser channelUser = channelService.findChannelUser(channel, senderAccount);
+        SenderVO sender = new SenderVO();
+        sender.setId(senderAccount.getId());
+        sender.setUsername(senderAccount.getUsername());
+        sender.setNickname(channelUser.getChannelNickname());
+        return sender;
     }
 
     @PostMapping("create")
