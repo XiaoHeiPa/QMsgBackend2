@@ -45,7 +45,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     private String calcShortContent(String content) {
         if (content.length() > 10) {
-            return content.substring(0, 10);
+            return content.substring(0, 10) + "...";
         }
         return content;
     }
