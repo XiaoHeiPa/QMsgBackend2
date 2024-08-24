@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -16,30 +17,35 @@ public class SessionServiceImpl implements SessionService {
     @Resource
     AccountService accountService;
 
-    private final ConcurrentHashMap<Long, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<WebSocketSession, Long> sessions = new ConcurrentHashMap<>();
 
     @Override
     public void addSession(Long user, WebSocketSession session) {
-        sessions.put(user, session);
+        sessions.put(session, user);
     }
 
     @Override
     public void removeSession(Long user) {
-        sessions.remove(user);
-    }
-
-    @Override
-    public void removeSession(WebSocketSession session) {
         sessions.forEach((key, value) -> {
-            if (value.equals(session)) {
+            if (value.equals(user)) {
                 sessions.remove(key);
             }
         });
     }
 
     @Override
+    public void removeSession(WebSocketSession session) {
+        sessions.remove(session);
+    }
+
+    @Override
     public WebSocketSession getSession(Long user) {
-        return sessions.get(user);
+        for (Map.Entry<WebSocketSession, Long> entry : sessions.entrySet()) {
+            if (entry.getValue().equals(user)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     @Override
