@@ -113,6 +113,19 @@ public class ChannelController {
         return ResponseEntity.ok(RestBean.success(list));
     }
 
+    @GetMapping("{id}/myInfo")
+    public ResponseEntity<RestBean<ChannelConfInfo>> getMyInfo(HttpServletRequest request, @PathVariable long id) {
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
+        if (account == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(RestBean.unauthorized("Unauthorized"));
+        }
+        ChannelConfInfo info = new ChannelConfInfo();
+        ChannelUser channelUser = channelService.findChannelUser(id, account);
+        info.setNickname(channelUser.getChannelNickname());
+        info.setPermissions(channelUser.getPermissions());
+        return ResponseEntity.ok(RestBean.success(info));
+    }
+
     @PostMapping("invite/generate")
     public ResponseEntity<RestBean<ChannelInviteCodeVO>> generateChannelInviteCode(HttpServletRequest request, @RequestBody GenerateChannelInviteCodeDTO dto) {
         long timeout = dto.getExpireAt() - System.currentTimeMillis();

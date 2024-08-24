@@ -82,4 +82,8 @@ public interface ChannelService {
     Channel findChannelByName(String name);
 
     Channel update(Channel channel);
+
+    ChannelUser findChannelUser(Channel channel, Account account);
+
+    ChannelUser findChannelUser(long channelId, Account account);
 }

@@ -317,4 +317,14 @@ public class ChannelServiceImpl implements ChannelService {
     public Channel update(Channel channel) {
         return channelRepository.save(channel);
     }
+
+    @Override
+    public ChannelUser findChannelUser(long channelId, Account account) {
+        return channelUserRepository.findByChannelIdAndUserId(channelId, account.getId());
+    }
+
+    @Override
+    public ChannelUser findChannelUser(Channel channel, Account account) {
+        return this.findChannelUser(channel.getId(), account);
+    }
 }

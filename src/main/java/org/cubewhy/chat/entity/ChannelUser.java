@@ -22,8 +22,15 @@ public class ChannelUser {
     @JoinColumn(name = "user_id")
     private Account user;
 
+    private String channelNickname;
+
     private LocalDateTime joinedAt; // Additional attribute
 
     @Convert(converter = PermissionConverter.class)
     private Set<Permission> permissions;
+
+    @PrePersist
+    protected void onCreate() {
+        this.channelNickname = user.getNickname();
+    }
 }

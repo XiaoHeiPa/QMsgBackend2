@@ -67,9 +67,15 @@ public class PushServiceImpl implements PushService {
             // push via websockets
             WebSocketSession session = sessionService.getSession(account.getId());
             if (session != null) {
+                SenderVO sender = new SenderVO();
+                Account senderAccount = accountService.findAccountByIdNoExtra(message.getSender());
+                sender.setId(senderAccount.getId());
+                sender.setUsername(senderAccount.getUsername());
+                ChannelUser channelUser = channelService.findChannelUser(channel, account);
+                sender.setNickname(channelUser.getChannelNickname());
                 session.sendMessage(new TextMessage(new WebSocketResponse<>(WebSocketResponse.NEW_MESSAGE, message.asViewObject(ChatMessageVO.class, (vo) -> {
                     vo.setChannel(channelService.findChannelById(message.getChannel()).asViewObject(ChannelVO.class));
-                    vo.setSender(accountService.findAccountByIdNoExtra(message.getSender()).asViewObject(SenderVO.class));
+                    vo.setSender(sender);
                 })).toJson()));
             }
         }
