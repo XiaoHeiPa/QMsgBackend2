@@ -1,6 +1,9 @@
 spring:
   application:
+    # Spring自己的键,配置时忽略即可
     name: QMsgBackend
+    # 服务器名称
+    server-name: Qby Messenger
     # AES/ECB/PKCS5 Key 长度必须为16
     # 实际部署请修改此值
     crypt-key: powered-by-zzyss
@@ -22,6 +25,13 @@ spring:
         # 不要分享你的配置文件
         # 注意: 即使禁用了Firebase推送,你也需要一个配置文件
         config: ~/.cubewhy/messenger/fcm.json
+    motd:
+      # 是否显示Motd
+      state: true
+      # 题目
+      title: Welcome to QMessenger
+      # 具体内容 (点击后显示)
+      text: An opensource fullstack chat application, designed with Love ♥️
   kafka:
     bootstrap-servers: localhost:9092
   security:
