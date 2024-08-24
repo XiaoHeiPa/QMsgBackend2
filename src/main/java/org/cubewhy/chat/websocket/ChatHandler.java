@@ -15,7 +15,6 @@ import org.cubewhy.chat.service.ChatMessageService;
 import org.cubewhy.chat.service.SessionService;
 import org.cubewhy.chat.util.JwtUtil;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
