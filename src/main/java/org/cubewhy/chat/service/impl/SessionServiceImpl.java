@@ -50,12 +50,6 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public Account getUser(@NotNull WebSocketSession session) {
-        AtomicReference<Account> result = new AtomicReference<>();
-        sessions.forEach((key, value) -> {
-            if (value.equals(session)) {
-                result.set(accountService.findAccountById(key));
-            }
-        });
-        return result.get();
+        return accountService.findAccountById(sessions.get(session));
     }
 }
