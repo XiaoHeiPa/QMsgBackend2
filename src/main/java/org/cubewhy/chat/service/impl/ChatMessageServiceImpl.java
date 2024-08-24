@@ -36,12 +36,18 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chatMessage.setSender(sender.getId());
         chatMessage.setContentType(message.getContentType());
         chatMessage.setContent(message.getContent());
-        chatMessage.setShortContent(message.getShortContent());
+        chatMessage.setShortContent(calcShortContent(message.getShortContent()));
         ChatMessage saved = chatMessageRepository.save(chatMessage);
-//        kafkaTemplate.send(KafkaConstants.KAFKA_TOPIC, saved); // push to kafka
         pushService.push(saved);
-        log.debug("Message from {}: {}", sender.getNickname(), chatMessage.getShortContent());
+        log.info("Message from {}: {}", sender.getNickname(), chatMessage.getShortContent());
         return saved;
+    }
+
+    private String calcShortContent(String content) {
+        if (content.length() > 10) {
+            return content.substring(0, 10);
+        }
+        return content;
     }
 
     @Override

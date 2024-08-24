@@ -21,6 +21,7 @@ public class ChatMessage implements BaseData {
     private String contentType; // 给客户端看的
     private String shortContent; // 通知/预览显示内容,由客户端决定
     @Convert(converter = MessageContentConverter.class)
+    @Column(columnDefinition = "LONGTEXT")
     private JSONObject content;
     private LocalDateTime timestamp;
     private LocalDateTime editTimestamp;
