@@ -32,6 +32,7 @@ public class Account implements BaseData, Principal {
     private Set<Role> roles = new HashSet<>();
 
     private String nickname;
+    @Column(columnDefinition = "LONGTEXT")
     private String bio;
     private String avatarHash;
 
