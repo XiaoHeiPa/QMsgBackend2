@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -17,6 +19,6 @@ public class ChatMessageVO {
     private SenderVO sender;
     private String shortContent;
     private String contentType;
-    private JSONObject content;
+    private List<JSONObject> content;
     private long timestamp;
 }

@@ -38,6 +38,9 @@ public class UserController {
     @GetMapping("whoami")
     public ResponseEntity<RestBean<AccountVO>> whoAmI(HttpServletRequest request) {
         Account account = accountService.findAccountByRequest(request);
+        if (account == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(RestBean.unauthorized("Unauthorized"));
+        }
         return ResponseEntity.ok(RestBean.success(account.asViewObject(AccountVO.class, (vo) -> {
             vo.setRoles(account.getRoles().stream().map(Role::getName).toList());
         })));

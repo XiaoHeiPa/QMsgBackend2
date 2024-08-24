@@ -34,7 +34,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setChannel(message.getChannel());
         chatMessage.setSender(sender.getId());
-        chatMessage.setContentType(message.getContentType());
         chatMessage.setContent(message.getContent());
         chatMessage.setShortContent(calcShortContent(message.getShortContent()));
         ChatMessage saved = chatMessageRepository.save(chatMessage);
