@@ -113,7 +113,7 @@ public class ChannelController {
     @PostMapping("invite/generate")
     public ResponseEntity<RestBean<ChannelInviteCodeVO>> generateChannelInviteCode(HttpServletRequest request, @RequestBody GenerateChannelInviteCodeDTO dto) {
         long timeout = dto.getExpireAt() - System.currentTimeMillis();
-        if (timeout <= 0) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RestBean.badRequest("Past time"));
+        if (timeout <= 0 && dto.getExpireAt() != -1) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RestBean.badRequest("Past time"));
         if (channelInviteCodeRedisTemplate.opsForValue().get(RedisConstants.CHANNEL_INVITATION + dto.getCode()) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(RestBean.failure(409, "Conflict"));
         }
@@ -132,7 +132,11 @@ public class ChannelController {
         vo.setExpireAt(dto.getExpireAt());
         vo.setExpireAfterUse(dto.isExpireAfterUse());
         // cache with redis
-        channelInviteCodeRedisTemplate.opsForValue().set(RedisConstants.CHANNEL_INVITATION + vo.getCode(), vo, timeout, TimeUnit.MILLISECONDS);
+        if (dto.getExpireAt() == -1) {
+            channelInviteCodeRedisTemplate.opsForValue().set(RedisConstants.CHANNEL_INVITATION + vo.getCode(), vo);
+        } else {
+            channelInviteCodeRedisTemplate.opsForValue().set(RedisConstants.CHANNEL_INVITATION + vo.getCode(), vo, timeout, TimeUnit.MILLISECONDS);
+        }
         return ResponseEntity.ok(RestBean.success(vo));
     }
 
