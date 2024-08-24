@@ -49,6 +49,8 @@ public class PushServiceImpl implements PushService {
     @Transactional
     public void push(ChatMessage message) throws FirebaseMessagingException, IOException {
         Channel channel = channelService.findChannelById(message.getChannel());
+        Account senderAccount = accountService.findAccountByIdNoExtra(message.getSender());
+        ChannelUser channelUser = channelService.findChannelUser(channel, senderAccount);
         for (ChannelUser user : channel.getChannelUsers()) {
             Account account = user.getUser();
             if (fcmState) {
@@ -68,10 +70,8 @@ public class PushServiceImpl implements PushService {
             WebSocketSession session = sessionService.getSession(account.getId());
             if (session != null) {
                 SenderVO sender = new SenderVO();
-                Account senderAccount = accountService.findAccountByIdNoExtra(message.getSender());
                 sender.setId(senderAccount.getId());
                 sender.setUsername(senderAccount.getUsername());
-                ChannelUser channelUser = channelService.findChannelUser(channel, account);
                 sender.setNickname(channelUser.getChannelNickname());
                 session.sendMessage(new TextMessage(new WebSocketResponse<>(WebSocketResponse.NEW_MESSAGE, message.asViewObject(ChatMessageVO.class, (vo) -> {
                     vo.setChannel(channelService.findChannelById(message.getChannel()).asViewObject(ChannelVO.class));
