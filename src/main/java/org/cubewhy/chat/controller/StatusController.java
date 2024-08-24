@@ -20,9 +20,13 @@ public class StatusController {
     @Value("${spring.application.motd.state}")
     boolean motdState;
 
+    @Value("${spring.application.server-name}")
+    String serverName;
+
     @GetMapping("check")
     public RestBean<StatusVO> check() {
         StatusVO status = new StatusVO();
+        status.setServerName(serverName);
         status.setTimestamp(System.currentTimeMillis());
         if (motdState) {
             MotdVO motd = new MotdVO();
