@@ -43,7 +43,7 @@ public class ChannelController {
         return ResponseEntity.ok(RestBean.success(chatMessageService.getMessagesByChannel(channel, page, size)
                 .map(chatMessage -> chatMessage.asViewObject(ChatMessageVO.class, (vo) -> {
                     vo.setChannel(channelService.findChannelById(chatMessage.getChannel()).asViewObject(ChannelVO.class));
-                    vo.setSender(getSender(accountService.findAccountById(chatMessage.getSender()), channel));
+                    vo.setSender(getSender(accountService.findAccountByIdNoExtra(chatMessage.getSender()), channel));
                 })).toList()));
     }
 
