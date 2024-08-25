@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -73,7 +72,7 @@ public class UserController {
         }
 
         Account account = new Account();
-        account.setUsername(dto.getUsername());
+        account.setUsername(dto.getUsername().toLowerCase().replace(" ", ""));
         account.setPassword(passwordEncoder.encode(dto.getPassword()));
         account.setEmail(dto.getEmail());
         account.setNickname(dto.getNickname());

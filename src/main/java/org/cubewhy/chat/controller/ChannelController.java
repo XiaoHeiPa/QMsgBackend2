@@ -2,10 +2,12 @@ package org.cubewhy.chat.controller;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import org.cubewhy.chat.entity.*;
 import org.cubewhy.chat.entity.dto.ChannelDTO;
 import org.cubewhy.chat.entity.dto.ChannelJoinRequestDTO;
 import org.cubewhy.chat.entity.dto.GenerateChannelInviteCodeDTO;
+import org.cubewhy.chat.entity.dto.UpdateChannelNicknameDTO;
 import org.cubewhy.chat.entity.vo.*;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.ChannelService;
@@ -47,6 +49,15 @@ public class ChannelController {
                 })).toList()));
     }
 
+    @PostMapping("{id}/nickname")
+    public ResponseEntity<RestBean<UpdateChannelNicknameVO>> setNewNickname(HttpServletRequest request, @RequestBody UpdateChannelNicknameDTO dto, @PathVariable long id) {
+        Account account = accountService.findAccountByRequest(request);
+        ChannelUser channelUser = channelService.findChannelUser(id, account);
+        channelUser.setChannelNickname(dto.getNickname());
+        ChannelUser newCu = channelService.updateChannelUser(channelUser);
+        return ResponseEntity.ok(RestBean.success(new UpdateChannelNicknameVO(newCu.getChannelNickname())));
+    }
+
     private SenderVO getSender(Account senderAccount, long channel) {
         ChannelUser channelUser = channelService.findChannelUser(channel, senderAccount);
         SenderVO sender = new SenderVO();
@@ -54,6 +65,14 @@ public class ChannelController {
         sender.setUsername(senderAccount.getUsername());
         sender.setNickname(channelUser.getChannelNickname());
         return sender;
+    }
+
+    @PostMapping("{id}/leave")
+    @Transactional
+    public ResponseEntity<RestBean<String>> leaveChannel(HttpServletRequest request, @PathVariable Long id) {
+        Account account = accountService.findAccountByRequest(request);
+        channelService.removeUserFromChannel(id, account.getId());
+        return ResponseEntity.ok(RestBean.success("Successfully leave channel"));
     }
 
     @PostMapping("create")

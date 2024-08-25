@@ -6,9 +6,7 @@ import org.cubewhy.chat.entity.dto.ChannelDTO;
 import org.cubewhy.chat.entity.dto.ChannelJoinRequestDTO;
 import org.cubewhy.chat.entity.dto.FriendRequestDTO;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 public interface ChannelService {
     boolean existByName(String name);
@@ -86,4 +84,6 @@ public interface ChannelService {
     ChannelUser findChannelUser(Channel channel, Account account);
 
     ChannelUser findChannelUser(long channelId, Account account);
+
+    ChannelUser updateChannelUser(ChannelUser newChannelUser);
 }

@@ -324,6 +324,11 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
+    public ChannelUser updateChannelUser(ChannelUser newChannelUser) {
+        return channelUserRepository.save(newChannelUser);
+    }
+
+    @Override
     public ChannelUser findChannelUser(Channel channel, Account account) {
         return this.findChannelUser(channel.getId(), account);
     }
