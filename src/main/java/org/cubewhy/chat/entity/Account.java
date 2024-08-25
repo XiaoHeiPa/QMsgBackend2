@@ -17,6 +17,7 @@ public class Account implements BaseData, Principal {
     private Long id;
 
     private String username;
+    @Convert(disableConversion = true)
     private String password;
     private String email;
 
