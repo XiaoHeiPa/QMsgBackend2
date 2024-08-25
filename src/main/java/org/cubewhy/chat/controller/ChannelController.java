@@ -78,6 +78,18 @@ public class ChannelController {
         return ResponseEntity.ok(RestBean.success(new UpdateChannelDescriptionVO(newC.getDescription())));
     }
 
+    @PostMapping("{id}/title")
+    public ResponseEntity<RestBean<UpdateChannelTitleVO>> updateChannelDescription(HttpServletRequest request, @RequestBody UpdateChannelTitleDTO dto, @PathVariable long id) {
+        Account account = accountService.findAccountByRequest(request);
+        Channel channel = channelService.findChannelById(id);
+        if (!channelService.checkPermissions(account, channel, Permission.MANAGE_CHANNEL)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(RestBean.forbidden("Forbidden"));
+        }
+        channel.setTitle(dto.getTitle());
+        Channel newC = channelService.updateChannel(channel);
+        return ResponseEntity.ok(RestBean.success(new UpdateChannelTitleVO(newC.getDescription())));
+    }
+
     @PostMapping("{id}/visible")
     public ResponseEntity<RestBean<UpdateChannelVisibleVO>> updateChannelVisible(HttpServletRequest request, @RequestBody UpdateChannelVisibleDTO dto, @PathVariable long id) {
         Account account = accountService.findAccountByRequest(request);
