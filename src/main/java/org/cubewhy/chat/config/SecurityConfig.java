@@ -10,7 +10,6 @@ import org.cubewhy.chat.entity.RestBean;
 import org.cubewhy.chat.entity.UserDetailsImpl;
 import org.cubewhy.chat.entity.vo.AuthorizeVO;
 import org.cubewhy.chat.entity.vo.RoleVO;
-import org.cubewhy.chat.filter.CorsFilter;
 import org.cubewhy.chat.filter.JwtAuthorizeFilter;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.UserDetailsServiceImpl;
@@ -90,6 +89,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers("/api/user/register").anonymous()
                                 .requestMatchers("/api/avatar/image/**").permitAll()
                                 .requestMatchers("/api/status/**").permitAll()
+                                .requestMatchers("/c/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(

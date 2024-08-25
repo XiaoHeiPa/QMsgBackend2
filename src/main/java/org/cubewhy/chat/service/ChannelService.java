@@ -86,4 +86,6 @@ public interface ChannelService {
     ChannelUser findChannelUser(long channelId, Account account);
 
     ChannelUser updateChannelUser(ChannelUser newChannelUser);
+
+    Channel updateChannel(Channel newChannel);
 }

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Group</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+            color: #333;
+        }
+
+        p {
+            color: #666;
+            font-size: 1rem;
+            margin: 10px 0;
+        }
+
+        .button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .rounded-image {
+            border-radius: 50%; /* 圆角半径，50% 会使图片变为圆形 */
+            width: 200px; /* 图片宽度 */
+            height: 200px; /* 图片高度 */
+            object-fit: cover; /* 保持图片比例并裁剪超出部分 */
+            border: 1px solid #565656; /* 边框颜色和宽度 */
+        }
+
+        .fixed-size-image {
+            width: 200px; /* 固定宽度 */
+            height: 200px; /* 固定高度 */
+            object-fit: cover; /* 保持图片比例并裁剪超出部分 */
+        }
+
+        .powered-by {
+            position: fixed;
+            bottom: 10px; /* Distance from the bottom */
+            right: 10px; /* Distance from the right */
+            /*background-color: #007bff;*/
+            color: #333333;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 0.875rem;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .powered-by a {
+            color: #666666;
+            text-decoration: none;
+        }
+
+        .powered-by a:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <img th:src="@{/api/avatar/image/{name}(name=${channel.name})}" alt="Avatar" class="rounded-image fixed-size-image">
+    <h1 th:text="${channel.title}">Channel Name</h1>
+    <p th:text="${channel.description}">Channel Description</p>
+    <a class="button" id="joinBtn">Join Channel</a>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Login to QMessenger</h2>
+            <form id="loginForm">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required><br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required><br><br>
+                <button type="button" class="button" th:onclick="join([[${channel.name}]])">Login & Join</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="powered-by">
+        Powered by <a href="https://github.com/qbychat" target="_blank">QMessenger</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let modal = document.getElementById("loginModal");
+            let btn = document.getElementById("joinBtn");
+            let form = document.getElementById("loginForm");
+
+            // Open the modal when the "Join Group" button is clicked
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
+
+            // Close the modal if the user clicks outside the modal
+            window.onclick = function (event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            // Handle form submission
+        });
+
+        function join(name) {
+            let modal = document.getElementById("loginModal");
+
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+
+            // Send login request
+            fetch(`/api/user/login?username=${username}&password=${password}`, {
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(response => {
+                    if (response.code === 200) {
+                        // If login is successful, join the group
+                        let token = response.data.token
+                        return fetch(`/api/channel/join/${name}`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+                    } else {
+                        throw new Error('Login failed');
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Successfully joined the group!');
+                        modal.style.display = "none"; // Close the modal
+                    } else {
+                        throw new Error('Failed to join the group');
+                    }
+                })
+                .catch(error => {
+                    alert(error.message);
+                });
+        }
+    </script>
+</div>
+</body>
+</html>

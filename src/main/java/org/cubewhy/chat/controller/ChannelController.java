@@ -4,10 +4,7 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.cubewhy.chat.entity.*;
-import org.cubewhy.chat.entity.dto.ChannelDTO;
-import org.cubewhy.chat.entity.dto.ChannelJoinRequestDTO;
-import org.cubewhy.chat.entity.dto.GenerateChannelInviteCodeDTO;
-import org.cubewhy.chat.entity.dto.UpdateChannelNicknameDTO;
+import org.cubewhy.chat.entity.dto.*;
 import org.cubewhy.chat.entity.vo.*;
 import org.cubewhy.chat.service.AccountService;
 import org.cubewhy.chat.service.ChannelService;
@@ -38,6 +35,17 @@ public class ChannelController {
     @Resource
     RedisTemplate<String, ChannelInviteCodeVO> channelInviteCodeRedisTemplate;
 
+    @PostMapping("join/{name}")
+    public ResponseEntity<RestBean<ChannelVO>> joinChannel(HttpServletRequest request, @PathVariable String name) {
+        Account account = accountService.findAccountById((int) request.getAttribute("id"));
+        Channel channel = channelService.findChannelByName(name);
+        if (!channel.isPublicChannel() || accountService.checkPermission(account, Permission.JOIN_CHANNEL)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(RestBean.forbidden("Forbidden"));
+        }
+        channelService.addUserToChannel(channel, account, Permission.SEND_MESSAGE, Permission.VIEW_CHANNEL, Permission.UPLOAD_FILES, Permission.DOWNLOAD_FILES);
+        return ResponseEntity.ok(RestBean.success(channel.asViewObject(ChannelVO.class)));
+    }
+
     @GetMapping("messages")
     public ResponseEntity<RestBean<List<ChatMessageVO>>> getChannelMessages(HttpServletRequest request, @RequestParam int channel, @RequestParam int page, @RequestParam int size) {
         Account account = accountService.findAccountById((int) request.getAttribute("id"));
@@ -56,6 +64,18 @@ public class ChannelController {
         channelUser.setChannelNickname(dto.getNickname());
         ChannelUser newCu = channelService.updateChannelUser(channelUser);
         return ResponseEntity.ok(RestBean.success(new UpdateChannelNicknameVO(newCu.getChannelNickname())));
+    }
+
+    @PostMapping("{id}/description")
+    public ResponseEntity<RestBean<UpdateChannelDescriptionVO>> updateChannelDescription(HttpServletRequest request, @RequestBody UpdateChannelDescriptionDTO dto, @PathVariable long id) {
+        Account account = accountService.findAccountByRequest(request);
+        Channel channel = channelService.findChannelById(id);
+        if (!channelService.checkPermissions(account, channel, Permission.MANAGE_CHANNEL)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(RestBean.forbidden("Forbidden"));
+        }
+        channel.setDescription(dto.getDescription());
+        Channel newC = channelService.updateChannel(channel);
+        return ResponseEntity.ok(RestBean.success(new UpdateChannelDescriptionVO(newC.getDescription())));
     }
 
     private SenderVO getSender(Account senderAccount, long channel) {
