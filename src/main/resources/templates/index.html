@@ -2,10 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome!</title>
+    <title>Welcome to QMessenger!</title>
+    <!-- 引入 Lottie Web 库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.10.0/lottie.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #animation-container {
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: #555;
+        }
+    </style>
 </head>
 <body>
 <h1>This server is running under QMessenger backend</h1>
-<p>View my <a href="https://github.com/cubewhy">GitHub</a></p>
+<p>View my <a href="https://github.com/qbychat" target="_blank">GitHub</a></p>
+
+<!-- 动画容器 -->
+<div id="animation-container"></div>
+
+<script>
+    // 初始化 Lottie 动画
+    var animation = lottie.loadAnimation({
+        container: document.getElementById('animation-container'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: 'https://lottie.host/32bdc8f0-1c57-4a53-bee1-41bd12317840/1e0JvIXn0L.json' // 示例动画 JSON 文件路径
+    });
+</script>
 </body>
 </html>
