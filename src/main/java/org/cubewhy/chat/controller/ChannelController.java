@@ -109,6 +109,9 @@ public class ChannelController {
 
     @PostMapping("create")
     public ResponseEntity<RestBean<ChannelVO>> createChannel(HttpServletRequest request, @RequestBody ChannelDTO createChannelDTO) {
+        if (createChannelDTO.getName().isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RestBean.forbidden("Invalid channel name"));
+        }
         Channel channel = channelService.createChannel(createChannelDTO);
         if (channel == null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(RestBean.failure(409, "Conflict"));
